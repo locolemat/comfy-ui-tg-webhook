@@ -10,3 +10,23 @@ async def prompt_video(prompt, id, workflow):
         response = await session.post(f"http://{ADDRESSES[0]}/prompt", 
                                       json=workflow.get_workflow(prompt=prompt, id=id))
         print("Запрос сгенерирован", response.status)
+
+
+async def get(id, file_type="png"):
+    async with aiohttp.ClientSession() as session:
+        response = await session.get(f"http://{ADDRESSES[0]}/view?filename={id}_00001.{file_type}&subfolder=&type=output")
+        status = response.status
+        response.close()
+        print(f'The status of the file request: {status}.')
+        return status
+    
+async def download(id, file_type="png"):
+    await asyncio.sleep(1)
+    folder = "photos"
+    if file_type != "png":
+        folder = "videos"
+    async with aiohttp.ClientSession() as session:
+        response = await session.get(f"http://{ADDRESSES[0]}/view?filename={id}_00001.{file_type}&subfolder=&type=output")
+        async with aiofiles.open(f'data//{folder}//{id}_new.{file_type}', 'wb') as target:
+            async for chank in response.content.iter_chunked(64*1024):
+                await target.write(chank)

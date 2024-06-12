@@ -1,3 +1,5 @@
+import os
+
 from aiogram import Router, F
 from aiogram.filters import CommandStart, StateFilter
 from aiogram.types import Message, ReplyKeyboardRemove, CallbackQuery
@@ -19,7 +21,7 @@ async def greeting_reply(message: Message):
         reply_markup=greeting_keyboard()
     )
 
-@router.callback_query(F.data.startswith(language.button_generate_text_image), StateFilter(None))
+@router.callback_query(F.data.startswith(language.button_generate_text_video), StateFilter(None))
 async def text_to_image_dimensions(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
 
@@ -28,9 +30,9 @@ async def text_to_image_dimensions(call: CallbackQuery, state: FSMContext):
         reply_markup=dimensions_keyboard()
     )
 
-    await state.set_state(states.TextToImage.choose_dimensions)
+    await state.set_state(states.TextToVideo.choose_dimensions)
 
-@router.callback_query(F.data.startswith('d'), StateFilter(states.TextToImage.choose_dimensions))
+@router.callback_query(F.data.startswith('d'), StateFilter(states.TextToVideo.choose_dimensions))
 async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
     data = call.data.split("_")[-1]
@@ -39,10 +41,10 @@ async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
     await call.message.answer(
         text = language.prompt_invitation
     )
-    await state.set_state(states.TextToImage.choose_prompt)
+    await state.set_state(states.TextToVideo.choose_prompt)
 
-@router.message(F.text, StateFilter(states.TextToImage.choose_prompt))
-async def text_to_image_generation(message: Message, state: FSMContext):
+@router.message(F.text, StateFilter(states.TextToVideo.choose_prompt))
+async def text_to_video_generation(message: Message, state: FSMContext):
     data = await state.get_data()
     await message.answer(
         text = LanguageModel.with_context(template=language.pre_generation_message,
@@ -59,3 +61,8 @@ async def text_to_image_generation(message: Message, state: FSMContext):
     print(f"Query ID: {id}")
 
     await client.prompt_video(message.text, id, workflow=WorkflowTextToVideo())
+
+    await utils.results_polling(status_func=client.get, download_func=client.download, id=id, file_type="mp4")
+    result_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'videos')
+
+    print(result_path)
