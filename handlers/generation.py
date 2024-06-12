@@ -5,6 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
 from keyboards.keyboards import greeting_keyboard, dimensions_keyboard
+from workflows.controller import WorkflowTextToVideo
 from states import states
 from utils import utils
 from client import client
@@ -57,4 +58,4 @@ async def text_to_image_generation(message: Message, state: FSMContext):
     id = utils.generate_string(8)
     print(f"Query ID: {id}")
 
-    await client.prompt_video(message.text, id)
+    await client.prompt_video(message.text, id, workflow=WorkflowTextToVideo())
