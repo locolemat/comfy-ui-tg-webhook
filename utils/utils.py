@@ -1,5 +1,6 @@
 import string
 import random
+import asyncio
 
 def generate_string(length):
     all_symbols = string.ascii_uppercase + string.digits
@@ -13,3 +14,4 @@ async def results_polling(status_func, download_func, id, file_type):
         if status == 200:
             t = False
             await download_func(id, file_type)
+        await asyncio.sleep(0.5)

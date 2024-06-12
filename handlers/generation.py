@@ -1,8 +1,9 @@
 import os
+import time
 
 from aiogram import Router, F
 from aiogram.filters import CommandStart, StateFilter
-from aiogram.types import Message, ReplyKeyboardRemove, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
@@ -15,7 +16,8 @@ from client import client
 router = Router()
 
 @router.message(F.text, StateFilter(None), CommandStart())
-async def greeting_reply(message: Message):
+async def greeting_reply(message: Message, state: FSMContext):
+    await state.clear()
     await message.answer(
         text=LanguageModel.with_context(template=language.greeting, context={"username":message.from_user.first_name,"tokens":10}),
         reply_markup=greeting_keyboard()
@@ -62,7 +64,13 @@ async def text_to_video_generation(message: Message, state: FSMContext):
 
     await client.prompt_video(message.text, id, workflow=WorkflowTextToVideo())
 
+    start_time = time.time()
     await utils.results_polling(status_func=client.get, download_func=client.download, id=id, file_type="mp4")
+    print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
+    
     result_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'videos')
 
-    print(result_path)
+    result = FSInputFile(os.path.join(result_path, f"{id}_new.mp4"), filename=f"{id}_new.mp4", chunk_size = 1024)
+
+    await message.bot.send_video(message.chat.id, result, caption="Сгенерированное вами видео:")
+    await state.clear()

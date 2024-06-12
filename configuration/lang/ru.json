@@ -10,5 +10,6 @@
         "dimension_portrait": "3:4",
         "prompt_invitation": "Пожалуйста, напишите свой промпт",
         "generation_began": "Ваш запрос обрабатывается",
+        "video_ready": "Ваше видео готово!",
         "pre_generation_message": "${action}.\nСоотношение сторон: ${dimensions}.\nПромпт: ${prompt}."
 }
