@@ -1,9 +1,9 @@
 import asyncio
 from aiogram import Bot, Dispatcher
-
+from token_reader import settings
 
 async def main():
-    bot = Bot(token="TOKEN")
+    bot = Bot(token=settings.bot_token)
     dp = Dispatcher()
 
     await bot.delete_webhook(drop_pending_updates=True)

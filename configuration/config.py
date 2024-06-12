@@ -8,5 +8,4 @@ config = None
 with open(CONFIG_FILE_LOCATION) as f:
     config = yaml.safe_load(f)
 
-BOT_TOKEN = config['bot']
 ADDRESSES = config['addresses']
