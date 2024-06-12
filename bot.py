@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher
 from token_reader import settings
 
 async def main():
-    bot = Bot(token=settings.bot_token)
+    bot = Bot(token=settings.bot_token.get_secret_value())
     dp = Dispatcher()
 
     await bot.delete_webhook(drop_pending_updates=True)
