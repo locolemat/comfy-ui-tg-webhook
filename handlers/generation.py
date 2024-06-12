@@ -6,6 +6,8 @@ from aiogram.fsm.context import FSMContext
 from configuration.localisation import LanguageModel, language
 from keyboards.keyboards import greeting_keyboard, dimensions_keyboard
 from states import states
+from utils import utils
+from client import client
 
 router = Router()
 
@@ -51,3 +53,8 @@ async def text_to_image_generation(message: Message, state: FSMContext):
     await message.answer(
         text = language.generation_began
     )
+
+    id = utils.generate_string(8)
+    print(f"Query ID: {id}")
+
+    await client.prompt_video(message.text, id)
