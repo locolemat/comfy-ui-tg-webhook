@@ -1,17 +1,17 @@
-from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram import types
 from configuration.localisation import language
 
-def greeting_keyboard() -> ReplyKeyboardBuilder:
-    builder = ReplyKeyboardBuilder()
+def greeting_keyboard() -> InlineKeyboardBuilder:
+    builder = InlineKeyboardBuilder()
 
-    builder.add(types.KeyboardButton(text=language.button_generate_text_image))
-    builder.add(types.KeyboardButton(text=language.button_generate_text_video))
-    builder.add(types.KeyboardButton(text=language.button_generate_image_video))
+    builder.add(types.InlineKeyboardButton(text=language.button_generate_text_image, callback_data=language.button_generate_text_image))
+    builder.add(types.InlineKeyboardButton(text=language.button_generate_text_video, callback_data=language.button_generate_text_video))
+    builder.add(types.InlineKeyboardButton(text=language.button_generate_image_video, callback_data=language.button_generate_image_video))
 
     builder.adjust(3)
 
-    return builder.as_markup(resize_keyboard=True)
+    return builder.as_markup()
 
 
 def dimensions_keyboard() -> InlineKeyboardBuilder:

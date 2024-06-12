@@ -16,15 +16,12 @@ async def greeting_reply(message: Message):
         reply_markup=greeting_keyboard()
     )
 
-@router.message(F.text.lower() == language.button_generate_text_image.lower(), StateFilter(None))
-async def text_to_image_dimensions(message: Message, state: FSMContext):
-    await message.answer(
-        text=language.generate_dimensions,
-        reply_markup=ReplyKeyboardRemove()
-    )
+@router.callback_query(F.data.startswith(language.button_generate_text_image), StateFilter(None))
+async def text_to_image_dimensions(call: CallbackQuery, state: FSMContext):
+    await call.message.delete()
 
-    await message.answer(
-        text = language.options,
+    await call.message.answer(
+        text = language.generate_dimensions,
         reply_markup=dimensions_keyboard()
     )
 
