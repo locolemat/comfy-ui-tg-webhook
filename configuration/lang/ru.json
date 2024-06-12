@@ -2,5 +2,13 @@
         "greeting": "Здравствуйте, ${username}! Добро пожаловать в AIDA - ИИ для генерации картинок и видео! \nУ Вас ${tokens} токенов. Выберите действие:",
         "button_generate_text_image": "Сгенерировать картинку из текста",
         "button_generate_text_video": "Сгенерировать видео из текста",
-        "button_generate_image_video": "Сгенерировать видео из картинки"
+        "button_generate_image_video": "Сгенерировать видео из картинки",
+        "generate_dimensions": "Пожалуйста, выберите соотношение сторон",
+        "options": "Варианты:",
+        "dimension_square": "1:1",
+        "dimension_landscape": "4:3",
+        "dimension_portrait": "3:4",
+        "prompt_invitation": "Пожалуйста, напишите свой промпт",
+        "generation_began": "Ваш запрос обрабатывается",
+        "pre_generation_message": "${action}.\nСоотношение сторон: ${dimensions}.\nПромпт: ${prompt}."
 }
