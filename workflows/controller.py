@@ -11,9 +11,16 @@ class Workflow():
     def get_workflow(self, **kwargs) -> dict:
         return jsone.render(self.file, kwargs)
     
+    def load_workflow(self, name):
+        with open(os.path.join(WORKFLOWS_FOLDER, name)) as f:
+            self.file = json.load(f)
+    
 class WorkflowTextToVideo(Workflow):
     def __init__(self):
-        with open(os.path.join(WORKFLOWS_FOLDER, 'text_to_video.json')) as f:
-            self.file = json.load(f)
+        self.load_workflow('text_to_video.json')
+
+class WorkflowTextToImage(Workflow):
+    def __init__(self):
+        self.load_workflow('text_to_image.json')
 
     

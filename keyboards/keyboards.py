@@ -9,7 +9,7 @@ def greeting_keyboard() -> InlineKeyboardBuilder:
     builder.add(types.InlineKeyboardButton(text=language.button_generate_text_video, callback_data=language.button_generate_text_video))
     builder.add(types.InlineKeyboardButton(text=language.button_generate_image_video, callback_data=language.button_generate_image_video))
 
-    builder.adjust(3)
+    builder.adjust(1)
 
     return builder.as_markup()
 
