@@ -64,7 +64,6 @@ async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
     file_type = ""
     folder = ""
     workflow = None
-    generate_function = None
 
     if current_state.startswith("TextToVideo"):
         await state.set_state(states.TextToVideo.choose_prompt)
@@ -82,7 +81,7 @@ async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
 
 @router.message(F.text, states.TextToImage.choose_prompt)        
 @router.message(F.text, states.TextToVideo.choose_prompt)
-async def text_to_video_generation(message: Message, state: FSMContext):
+async def from_text_generation(message: Message, state: FSMContext):
     data = await state.get_data()
     print(data)
     file_type = data["file_type"]
@@ -101,7 +100,7 @@ async def text_to_video_generation(message: Message, state: FSMContext):
         text = language.generation_began
     )
 
-    id = utils.generate_string(8)
+    id = utils.generate_string(10)
     print(f"Query ID: {id}")
 
     await client.prompt_query(message.text, id, workflow=workflow())
@@ -117,6 +116,6 @@ async def text_to_video_generation(message: Message, state: FSMContext):
     if folder == "videos":
         await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
     elif folder == "photos":
-        await message.answer_photo(result, caption="Вы сгенерировали это фото")
+        await message.answer_photo(result, caption=language.picture_ready)
     await state.clear()
 

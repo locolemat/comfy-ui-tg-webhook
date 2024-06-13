@@ -11,5 +11,6 @@
         "prompt_invitation": "Пожалуйста, напишите свой промпт",
         "generation_began": "Ваш запрос обрабатывается",
         "video_ready": "Ваше видео готово!",
+        "picture_ready": "Ваша картинка готова!",
         "pre_generation_message": "${action}.\nСоотношение сторон: ${dimensions}.\nПромпт: ${prompt}."
 }
