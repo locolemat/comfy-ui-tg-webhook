@@ -3,6 +3,8 @@ import aiohttp
 import asyncio
 import os
 
+import json
+
 from configuration.config import ADDRESSES
 
 async def prompt_query(prompt, id, workflow):

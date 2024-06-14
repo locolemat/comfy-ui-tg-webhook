@@ -137,12 +137,33 @@ async def from_text_generation(message: Message, state: FSMContext):
 
 @router.message(F.photo, states.ImageToVideo.choose_prompt)
 async def from_image_generation(message: Message, state: FSMContext):
+    data = await state.get_data()
+    print(data)
+    file_type = data["file_type"]
+    folder = data["folder"]
+    workflow = data["workflow"]
+
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload')
     photo_id = message.photo[-1].file_id
 
-    photo_path = os.path.join(UPLOAD_FOLDER, f"{photo_id}_up.png")
+    id = utils.generate_string(10)
+    image_name = f"{id}_up.png"
+
+    photo_path = os.path.join(UPLOAD_FOLDER, image_name)
 
     await message.bot.download(file=photo_id, destination=photo_path)
 
     await client.upload_image(image_path=photo_path)
 
+    await client.prompt_query(prompt=image_name, id = id, workflow=workflow())
+
+    start_time = time.time()
+    await utils.results_polling(status_func=client.get, download_func=client.download, id=id, file_type=file_type)
+    print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
+
+    result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
+
+    result = FSInputFile(os.path.join(result_path, f"{id}_new.{file_type}"), filename=f"{id}_new.{file_type}", chunk_size = 1024)
+
+    await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
+    await state.clear()
