@@ -8,7 +8,7 @@ from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
 from keyboards.keyboards import greeting_keyboard, dimensions_keyboard
-from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage
+from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, WorkflowImageToVideo
 from states import states
 from utils import utils
 from client import client
@@ -44,10 +44,13 @@ async def text_to_video_dimensions(call: CallbackQuery, state: FSMContext):
         await state.set_state(states.TextToVideo.choose_dimensions)
     elif call.data == language.button_generate_text_image:
         await state.set_state(states.TextToImage.choose_dimensions)
+    elif call.data == language.button_generate_image_video:
+        await state.set_state(states.ImageToVideo.choose_dimensions)
 
     await state.update_data(action=call.data)
 
 
+@router.callback_query(states.ImageToVideo.choose_dimensions, F.data.startswith('d'))
 @router.callback_query(states.TextToImage.choose_dimensions, F.data.startswith('d'))
 @router.callback_query(states.TextToVideo.choose_dimensions, F.data.startswith('d'))
 async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
@@ -65,11 +68,15 @@ async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
     folder = ""
     workflow = None
 
-    if current_state.startswith("TextToVideo"):
-        await state.set_state(states.TextToVideo.choose_prompt)
+    if current_state.startswith("TextToVideo") or current_state.startswith("ImageToVideo"):
         file_type = "mp4"
         folder = "videos"
-        workflow = WorkflowTextToVideo
+        if current_state.startswith("TextToVideo"):
+            await state.set_state(states.TextToVideo.choose_prompt)
+            workflow = WorkflowTextToVideo
+        else:
+            await state.set_state(states.ImageToVideo.choose_prompt)
+            workflow = WorkflowImageToVideo
 
     elif current_state.startswith("TextToImage"):
         await state.set_state(states.TextToImage.choose_prompt)
@@ -119,3 +126,6 @@ async def from_text_generation(message: Message, state: FSMContext):
         await message.answer_photo(result, caption=language.picture_ready)
     await state.clear()
 
+@router.message(F.text, states.ImageToVideo.choose_prompt)
+async def from_image_generation(message: Message, state: FSMContext):
+    pass

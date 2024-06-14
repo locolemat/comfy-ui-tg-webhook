@@ -1,6 +1,7 @@
 import aiofiles
 import aiohttp
 import asyncio
+import os
 
 from configuration.config import ADDRESSES
 
@@ -20,6 +21,17 @@ async def get(id, file_type="png"):
         print(f'The status of the file request: {status}.')
         return status
     
+
+async def upload_image(image, address = ADDRESSES[0]):
+    data = aiohttp.FormData()
+    with open(os.getcwd() + '/upload/' + image, 'rb') as f:
+        data.add_field('file', f, filename=image, content_type='image/png')
+        async with aiohttp.ClientSession() as session:
+            response = await session.post(f'http://{address}/upload_image', data=data)
+            response.close()
+            return await response.text()
+
+
 async def download(id, file_type="png"):
     await asyncio.sleep(1)
     folder = "photos"

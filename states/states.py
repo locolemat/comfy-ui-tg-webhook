@@ -8,3 +8,7 @@ class TextToVideo(StatesGroup):
 class TextToImage(StatesGroup):
     choose_dimensions = State()
     choose_prompt = State()
+
+class ImageToVideo(StatesGroup):
+    choose_dimensions = State()
+    choose_prompt = State()
