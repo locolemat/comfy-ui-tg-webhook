@@ -22,14 +22,16 @@ async def get(id, file_type="png"):
         return status
     
 
-async def upload_image(image, address = ADDRESSES[0]):
+async def upload_image(image_path, address = ADDRESSES[0]):
     data = aiohttp.FormData()
-    with open(os.getcwd() + '/upload/' + image, 'rb') as f:
-        data.add_field('file', f, filename=image, content_type='image/png')
+    with open(image_path, 'rb') as f:
+        data.add_field('image', f, filename=os.path.basename(image_path), content_type='image/png')
         async with aiohttp.ClientSession() as session:
-            response = await session.post(f'http://{address}/upload_image', data=data)
+            response = await session.post(f'http://{address}/upload/image', data=data)
+            status = response.text
             response.close()
-            return await response.text()
+            return status
+            
 
 
 async def download(id, file_type="png"):

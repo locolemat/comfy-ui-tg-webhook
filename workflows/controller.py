@@ -24,6 +24,7 @@ class WorkflowTextToImage(Workflow):
         self.load_workflow('text_to_image.json')
 
 class WorkflowImageToVideo(Workflow):
-    pass
+    def __init__(self):
+        self.load_workflow('image_to_video.json')
 
     

@@ -51,6 +51,19 @@ async def text_to_video_dimensions(call: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(states.ImageToVideo.choose_dimensions, F.data.startswith('d'))
+async def image_to_video_prompt(call: CallbackQuery, state: FSMContext):
+    await call.message.delete()
+    data = call.data.split("_")[-1]
+    await state.update_data(dimensions=data)
+
+    await call.message.answer(
+        text = language.video_prompt_invitation
+    )
+
+    await state.set_state(states.ImageToVideo.choose_prompt)
+    await state.update_data({"file_type": "mp4", "folder": "videos", "workflow": WorkflowImageToVideo})
+
+
 @router.callback_query(states.TextToImage.choose_dimensions, F.data.startswith('d'))
 @router.callback_query(states.TextToVideo.choose_dimensions, F.data.startswith('d'))
 async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
@@ -68,15 +81,11 @@ async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
     folder = ""
     workflow = None
 
-    if current_state.startswith("TextToVideo") or current_state.startswith("ImageToVideo"):
+    if current_state.startswith("TextToVideo"):
+        await state.set_state(states.TextToVideo.choose_prompt)
         file_type = "mp4"
         folder = "videos"
-        if current_state.startswith("TextToVideo"):
-            await state.set_state(states.TextToVideo.choose_prompt)
-            workflow = WorkflowTextToVideo
-        else:
-            await state.set_state(states.ImageToVideo.choose_prompt)
-            workflow = WorkflowImageToVideo
+        workflow = WorkflowTextToVideo
 
     elif current_state.startswith("TextToImage"):
         await state.set_state(states.TextToImage.choose_prompt)
@@ -126,6 +135,14 @@ async def from_text_generation(message: Message, state: FSMContext):
         await message.answer_photo(result, caption=language.picture_ready)
     await state.clear()
 
-@router.message(F.text, states.ImageToVideo.choose_prompt)
+@router.message(F.photo, states.ImageToVideo.choose_prompt)
 async def from_image_generation(message: Message, state: FSMContext):
-    pass
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload')
+    photo_id = message.photo[-1].file_id
+
+    photo_path = os.path.join(UPLOAD_FOLDER, f"{photo_id}_up.png")
+
+    await message.bot.download(file=photo_id, destination=photo_path)
+
+    await client.upload_image(image_path=photo_path)
+
