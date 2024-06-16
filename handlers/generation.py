@@ -147,7 +147,8 @@ async def from_text_generation(message: Message, state: FSMContext):
         server.busy(False)
         queue_item = QUEUE.advance_queue()
 
-        await process_queue_result_text(queue_item=queue_item, server=server)
+        if queue_item:
+            await process_queue_result_text(queue_item=queue_item, server=server)
 
     else:
         queue_item = QueueItem(prompt=message.text, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id)
@@ -162,9 +163,10 @@ async def from_text_generation(message: Message, state: FSMContext):
 async def from_image_generation(message: Message, state: FSMContext):
     data = await state.get_data()
     print(data)
-    file_type = data["file_type"]
-    folder = data["folder"]
+    
     workflow = data["workflow"]
+    file_type = workflow.file_type
+    folder = workflow.folder
 
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload')
     photo_id = message.photo[-1].file_id
@@ -197,7 +199,8 @@ async def from_image_generation(message: Message, state: FSMContext):
         await state.clear()
 
         queue_item = QUEUE.advance_queue()
-        await process_queue_result_image(queue_item=queue_item, server=server)
+        if queue_item:
+            await process_queue_result_image(queue_item=queue_item, server=server)
 
     else:
         queue_item = QueueItem(prompt=photo_path, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id)
