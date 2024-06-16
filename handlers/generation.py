@@ -175,7 +175,7 @@ async def from_image_generation(message: Message, state: FSMContext):
         server.busy(True)
         await client.upload_image(address=server.address(), image_path=photo_path)
 
-        await client.prompt_query(address=server.addres(), prompt=image_name, id = id, workflow=workflow())
+        await client.prompt_query(address=server.address(), prompt=image_name, id = id, workflow=workflow())
 
         start_time = time.time()
         await utils.results_polling(address=server.address(), status_func=client.get, download_func=client.download, id=id, file_type=file_type)
