@@ -16,14 +16,25 @@ class Workflow():
             self.file = json.load(f)
     
 class WorkflowTextToVideo(Workflow):
+    file_type = "mp4"
+    folder = "videos"
+
     def __init__(self):
         self.load_workflow('text_to_video.json')
+        
 
 class WorkflowTextToImage(Workflow):
+    file_type = "png"
+    folder = "photos"
+    
     def __init__(self):
         self.load_workflow('text_to_image.json')
+        
 
 class WorkflowImageToVideo(Workflow):
+    file_type = "mp4"
+    folder = "videos"
+    
     def __init__(self):
         self.load_workflow('image_to_video.json')
 

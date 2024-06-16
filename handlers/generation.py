@@ -65,10 +65,24 @@ async def image_to_video_prompt(call: CallbackQuery, state: FSMContext):
     )
 
     await state.set_state(states.ImageToVideo.choose_prompt)
-    await state.update_data({"file_type": "mp4", "folder": "videos", "workflow": WorkflowImageToVideo})
+    await state.update_data(workflow=WorkflowImageToVideo)
 
 
 @router.callback_query(states.TextToImage.choose_dimensions, F.data.startswith('d'))
+async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
+    await call.message.delete()
+    data = call.data.split("_")[-1]
+    await state.update_data(dimensions=data)
+
+    await call.message.answer(
+        text = language.prompt_invitation
+    )
+
+
+    await state.set_state(states.TextToImage.choose_prompt)
+    await state.update_data(workflow=WorkflowTextToImage)
+
+
 @router.callback_query(states.TextToVideo.choose_dimensions, F.data.startswith('d'))
 async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
@@ -79,34 +93,20 @@ async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
         text = language.prompt_invitation
     )
 
-    current_state = await state.get_state()
 
-    file_type = ""
-    folder = ""
-    workflow = None
-
-    if current_state.startswith("TextToVideo"):
-        await state.set_state(states.TextToVideo.choose_prompt)
-        file_type = "mp4"
-        folder = "videos"
-        workflow = WorkflowTextToVideo
-
-    elif current_state.startswith("TextToImage"):
-        await state.set_state(states.TextToImage.choose_prompt)
-        file_type = "png"
-        folder = "photos"
-        workflow = WorkflowTextToImage
-
-    await state.update_data({"file_type": file_type, "folder": folder, "workflow": workflow})
-
+    await state.set_state(states.TextToVideo.choose_prompt)
+    await state.update_data(workflow=WorkflowTextToVideo)
+        
+    
 @router.message(F.text, states.TextToImage.choose_prompt)        
 @router.message(F.text, states.TextToVideo.choose_prompt)
 async def from_text_generation(message: Message, state: FSMContext):
     data = await state.get_data()
     print(data)
-    file_type = data["file_type"]
-    folder = data["folder"]
     workflow = data["workflow"]
+    file_type = workflow.file_type
+    folder = workflow.folder
+    
 
     address = SERVER_LIST.find_avaiable_server()
 
