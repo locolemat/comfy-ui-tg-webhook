@@ -12,6 +12,7 @@ from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, Workf
 
 from server_queue.server_queue import QueueItem
 from server_queue.server_queue import SERVER_LIST, QUEUE
+from server_queue.propagation import process_queue_result_text
 
 from states import states
 from utils import utils
@@ -108,10 +109,10 @@ async def from_text_generation(message: Message, state: FSMContext):
     folder = workflow.folder
     
 
-    address = SERVER_LIST.find_avaiable_server()
+    server = SERVER_LIST.find_avaiable_server()
 
-    if address:
-        address.busy(True)
+    if server:
+        server.busy(True)
 
         await message.answer(
             text = LanguageModel.with_context(template=language.pre_generation_message,
@@ -127,10 +128,10 @@ async def from_text_generation(message: Message, state: FSMContext):
         id = utils.generate_string(10)
         print(f"Query ID: {id}")
 
-        await client.prompt_query(prompt=message.text, address=address.address(), id=id, workflow=workflow())
+        await client.prompt_query(prompt=message.text, address=server.address(), id=id, workflow=workflow())
 
         start_time = time.time()
-        await utils.results_polling(address=address.address(), status_func=client.get, download_func=client.download, id=id, file_type=file_type)
+        await utils.results_polling(address=server.address(), status_func=client.get, download_func=client.download, id=id, file_type=file_type)
         print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
         
         result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
@@ -143,9 +144,13 @@ async def from_text_generation(message: Message, state: FSMContext):
             await message.answer_photo(result, caption=language.picture_ready)
         await state.clear()
 
-        address.busy(False)
+        server.busy(False)
+        queue_item = QUEUE.advance_queue()
+
+        await process_queue_result_text(queue_item=queue_item, server=server)
+
     else:
-        queue_item = QueueItem(prompt=message.text, workflow=workflow, dimensions=data["dimensions"])
+        queue_item = QueueItem(prompt=message.text, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id)
         QUEUE.add_to_queue(queue_item=queue_item)
         position = QUEUE.get_length()
         await message.answer(
@@ -190,8 +195,12 @@ async def from_image_generation(message: Message, state: FSMContext):
         server.busy(False)
 
         await state.clear()
+
+        queue_item = QUEUE.advance_queue()
+        await process_queue_result_text(queue_item=queue_item, server=server)
+        
     else:
-        queue_item = QueueItem(prompt=photo_path, workflow=workflow, dimensions=data["dimensions"])
+        queue_item = QueueItem(prompt=photo_path, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id)
         QUEUE.add_to_queue(queue_item=queue_item)
         position = QUEUE.get_length()
         await message.answer(

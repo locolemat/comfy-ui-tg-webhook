@@ -32,11 +32,19 @@ class ServerList:
         
 
 class QueueItem:
-    def __init__(self, prompt: str, workflow: Workflow, dimensions: str):
+    def __init__(self, prompt: str, workflow: Workflow, dimensions: str, user_id: str):
         self._prompt = prompt
         self._workflow = workflow
         self._dimensions = dimensions
+        self._user_id = user_id
 
+    
+    def user_id(self, user_id: str | None) -> str | None:
+        if user_id is not None:
+            self._user_id = user_id
+        else:
+            return self._user_id
+        
     
     def prompt(self, prompt: str | None = None) -> str | None:
         if prompt is not None:
@@ -44,12 +52,14 @@ class QueueItem:
         else:
             return self._prompt
         
+
     def workflow(self, workflow: Workflow | None = None) -> Workflow | None:
         if workflow is not None:
             self._workflow = workflow
         else:
             return self._workflow
         
+
     def dimensions(self, dimensions: str | None = None) -> str | None:
         if dimensions is not None:
             self._dimensions = dimensions
