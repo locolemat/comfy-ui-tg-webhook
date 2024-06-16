@@ -12,7 +12,7 @@ from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, Workf
 
 from server_queue.server_queue import QueueItem
 from server_queue.server_queue import SERVER_LIST, QUEUE
-from server_queue.propagation import process_queue_result_text
+from server_queue.propagation import process_queue_result_text, process_queue_result_image
 
 from states import states
 from utils import utils
@@ -197,8 +197,8 @@ async def from_image_generation(message: Message, state: FSMContext):
         await state.clear()
 
         queue_item = QUEUE.advance_queue()
-        await process_queue_result_text(queue_item=queue_item, server=server)
-        
+        await process_queue_result_image(queue_item=queue_item, server=server)
+
     else:
         queue_item = QueueItem(prompt=photo_path, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id)
         QUEUE.add_to_queue(queue_item=queue_item)
