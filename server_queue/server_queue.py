@@ -1,4 +1,5 @@
 from workflows.controller import Workflow
+from configuration.config import ADDRESSES
 
 class Server:
     def __init__(self, address: str, busy: bool = False):
@@ -26,7 +27,7 @@ class ServerList:
     
     def find_avaiable_server(self) -> Server | None:
         for server in self._servers:
-            if server.busy():
+            if not server.busy():
                 return server
         
 
@@ -56,7 +57,7 @@ class QueueItem:
             return self._dimensions
 
 
-class Queue:
+class ServerQueue:
     def __init__(self):
         self._queue = []
 
@@ -65,7 +66,14 @@ class Queue:
         self._queue.append(queue_item)
 
     
+    def get_length(self):
+        return len(self._queue)
+    
+    
     def advance_queue(self) -> QueueItem | None:
         if len(self._queue) != 0:
             return self._queue.pop()
 
+
+QUEUE = ServerQueue()
+SERVER_LIST = ServerList(servers=[Server(address=address) for address in ADDRESSES])

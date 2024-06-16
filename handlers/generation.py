@@ -9,6 +9,10 @@ from aiogram.fsm.context import FSMContext
 from configuration.localisation import LanguageModel, language
 from keyboards.keyboards import greeting_keyboard, dimensions_keyboard
 from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, WorkflowImageToVideo
+
+from server_queue.server_queue import QueueItem
+from server_queue.server_queue import SERVER_LIST, QUEUE
+
 from states import states
 from utils import utils
 from client import client
@@ -104,36 +108,50 @@ async def from_text_generation(message: Message, state: FSMContext):
     folder = data["folder"]
     workflow = data["workflow"]
 
+    address = SERVER_LIST.find_avaiable_server()
 
-    await message.answer(
-        text = LanguageModel.with_context(template=language.pre_generation_message,
-                                          context={"action": data["action"],
-                                                   "dimensions": data["dimensions"],
-                                                   "prompt": message.text})
-    )
+    if address:
+        address.busy(True)
 
-    await message.answer(
-        text = language.generation_began
-    )
+        await message.answer(
+            text = LanguageModel.with_context(template=language.pre_generation_message,
+                                            context={"action": data["action"],
+                                                    "dimensions": data["dimensions"],
+                                                    "prompt": message.text})
+        )
 
-    id = utils.generate_string(10)
-    print(f"Query ID: {id}")
+        await message.answer(
+            text = language.generation_began
+        )
 
-    await client.prompt_query(message.text, id, workflow=workflow())
+        id = utils.generate_string(10)
+        print(f"Query ID: {id}")
 
-    start_time = time.time()
-    await utils.results_polling(status_func=client.get, download_func=client.download, id=id, file_type=file_type)
-    print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
-    
-    result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
+        await client.prompt_query(prompt=message.text, address=address.address(), id=id, workflow=workflow())
 
-    result = FSInputFile(os.path.join(result_path, f"{id}_new.{file_type}"), filename=f"{id}_new.{file_type}", chunk_size = 1024)
+        start_time = time.time()
+        await utils.results_polling(address=address.address(), status_func=client.get, download_func=client.download, id=id, file_type=file_type)
+        print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
+        
+        result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
 
-    if folder == "videos":
-        await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
-    elif folder == "photos":
-        await message.answer_photo(result, caption=language.picture_ready)
-    await state.clear()
+        result = FSInputFile(os.path.join(result_path, f"{id}_new.{file_type}"), filename=f"{id}_new.{file_type}", chunk_size = 1024)
+
+        if folder == "videos":
+            await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
+        elif folder == "photos":
+            await message.answer_photo(result, caption=language.picture_ready)
+        await state.clear()
+
+        address.busy(False)
+    else:
+        queue_item = QueueItem(prompt=message.text, workflow=workflow, dimensions=data["dimensions"])
+        QUEUE.add_to_queue(queue_item=queue_item)
+        position = QUEUE.get_length()
+        await message.answer(
+            text=LanguageModel.with_context(template=language.queue_added, context={"position": position})
+        )
+
 
 @router.message(F.photo, states.ImageToVideo.choose_prompt)
 async def from_image_generation(message: Message, state: FSMContext):
