@@ -166,22 +166,34 @@ async def from_image_generation(message: Message, state: FSMContext):
 
     id = utils.generate_string(10)
     image_name = f"{id}_up.png"
-
     photo_path = os.path.join(UPLOAD_FOLDER, image_name)
-
     await message.bot.download(file=photo_id, destination=photo_path)
+    
+    server = SERVER_LIST.find_avaiable_server()
 
-    await client.upload_image(image_path=photo_path)
+    if server:
+        server.busy(True)
+        await client.upload_image(address=server.address(), image_path=photo_path)
 
-    await client.prompt_query(prompt=image_name, id = id, workflow=workflow())
+        await client.prompt_query(address=server.addres(), prompt=image_name, id = id, workflow=workflow())
 
-    start_time = time.time()
-    await utils.results_polling(status_func=client.get, download_func=client.download, id=id, file_type=file_type)
-    print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
+        start_time = time.time()
+        await utils.results_polling(address=server.address(), status_func=client.get, download_func=client.download, id=id, file_type=file_type)
+        print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
 
-    result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
+        result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
 
-    result = FSInputFile(os.path.join(result_path, f"{id}_new.{file_type}"), filename=f"{id}_new.{file_type}", chunk_size = 1024)
+        result = FSInputFile(os.path.join(result_path, f"{id}_new.{file_type}"), filename=f"{id}_new.{file_type}", chunk_size = 1024)
 
-    await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
-    await state.clear()
+        await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
+
+        server.busy(False)
+
+        await state.clear()
+    else:
+        queue_item = QueueItem(prompt=photo_path, workflow=workflow, dimensions=data["dimensions"])
+        QUEUE.add_to_queue(queue_item=queue_item)
+        position = QUEUE.get_length()
+        await message.answer(
+            text=LanguageModel.with_context(template=language.queue_added, context={"position": position})
+        )
