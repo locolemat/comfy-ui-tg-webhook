@@ -20,6 +20,7 @@ class Server:
         else:
             return self._busy
 
+
 class ServerList:
     def __init__(self, servers: list[Server]):
         self._servers = servers
@@ -39,7 +40,7 @@ class QueueItem:
         self._user_id = user_id
 
     
-    def user_id(self, user_id: str | None) -> str | None:
+    def user_id(self, user_id: str | None = None) -> str | None:
         if user_id is not None:
             self._user_id = user_id
         else:

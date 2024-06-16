@@ -12,6 +12,7 @@ async def prompt_query(prompt, address, id, workflow):
         response = await session.post(f"http://{address}/prompt", 
                                       json=workflow.get_workflow(prompt=prompt, id=id, negative_prompt=""))
         print("Запрос сгенерирован", response.status)
+        response.close()
 
 
 async def get(id, address, file_type="png"):
@@ -45,3 +46,4 @@ async def download(id, address, file_type="png"):
         async with aiofiles.open(f'data//{folder}//{id}_new.{file_type}', 'wb') as target:
             async for chank in response.content.iter_chunked(64*1024):
                 await target.write(chank)
+        response.close()
