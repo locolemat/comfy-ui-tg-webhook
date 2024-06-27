@@ -3,7 +3,7 @@
     "prompt": {
         "3": {
             "inputs": {
-                "seed": 958540525371069,
+                "seed": "${seed}",
                 "steps": 20,
                 "cfg": 8,
                 "sampler_name": "euler",
@@ -42,8 +42,8 @@
         },
         "5": {
             "inputs": {
-                "width": 512,
-                "height": 512,
+                "width": "${width}",
+                "height": "${height}",
                 "batch_size": 1
             },
             "class_type": "EmptyLatentImage",
@@ -141,8 +141,8 @@
                             "Node name for S&R": "EmptyLatentImage"
                         },
                         "widgets_values": [
-                            512,
-                            512,
+                            "${width}",
+                            "${height}",
                             1
                         ]
                     },
@@ -196,7 +196,7 @@
                             "Node name for S&R": "KSampler"
                         },
                         "widgets_values": [
-                            958540525371069,
+                            "${seed}",
                             "randomize",
                             20,
                             8,
