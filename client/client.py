@@ -3,14 +3,16 @@ import aiohttp
 import asyncio
 import os
 
+from random import randint
+
 import json
 
 
-async def prompt_query(prompt, address, id, workflow):
+async def prompt_query(prompt, address, id, width, height, workflow):
 
     async with aiohttp.ClientSession() as session:
         response = await session.post(f"http://{address}/prompt", 
-                                      json=workflow.get_workflow(prompt=prompt, id=id, negative_prompt=""))
+                                      json=workflow.get_workflow(prompt=prompt, id=id, negative_prompt="", width=width, height=height, seed=randint(1, 1_000_000_000)))
         print("Запрос сгенерирован", response.status)
         response.close()
 

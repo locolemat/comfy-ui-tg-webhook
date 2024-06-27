@@ -121,6 +121,8 @@ async def from_text_generation(message: Message, state: FSMContext):
                                                     "prompt": message.text})
         )
 
+        dimensions = utils.get_dimensions(data["dimensions"])
+
         await message.answer(
             text = language.generation_began
         )
@@ -128,7 +130,7 @@ async def from_text_generation(message: Message, state: FSMContext):
         id = utils.generate_string(10)
         print(f"Query ID: {id}")
 
-        await client.prompt_query(prompt=message.text, address=server.address(), id=id, workflow=workflow())
+        await client.prompt_query(prompt=message.text, address=server.address(), id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"])
 
         start_time = time.time()
         await utils.results_polling(address=server.address(), status_func=client.get, download_func=client.download, id=id, file_type=file_type)

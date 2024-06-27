@@ -7,6 +7,17 @@ def generate_string(length):
     result = ''.join(random.choice(all_symbols) for _ in range(length))
     return result
 
+def get_dimensions(dimensions):
+    dimensions = list(map(int, dimensions.split(':')))
+
+    if dimensions[0] == dimensions[1]:
+        return dict(width=512, height=512)
+    elif dimensions[0] > dimensions[1]:
+        return dict(width=768, height=512)
+    else:
+        return dict(width=512, height=768)
+
+
 async def results_polling(address, status_func, download_func, id, file_type):
     t = True
     while t:
