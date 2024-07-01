@@ -35,13 +35,28 @@ greeting_buttons_text = {
 @router.message(F.text, CommandStart())
 async def greeting_reply(message: Message, state: FSMContext):
     await state.clear()
-    username = message.from_user.first_name
+    
     tgid = message.from_user.id
 
-    print(tgid, username)
+    session = create_session()
+
+    user = User.check_if_user_exists(tgid=tgid)
+
+    if user is None:
+        username = message.from_user.first_name
+        balance = 10
+        user = User(username=username, tgid=tgid, balance=balance)
+        session.add(user)
+        session.commit()
+
+    else:
+        username = user.username
+        balance = user.balance
+
+    session.close()
 
     await message.answer(
-        text=LanguageModel.with_context(template=language.greeting, context={"username":username,"tokens":10}),
+        text=LanguageModel.with_context(template=language.greeting, context={"username":username,"tokens":balance}),
         reply_markup=greeting_keyboard()
     )
 
