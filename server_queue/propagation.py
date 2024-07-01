@@ -52,7 +52,7 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
     start_time = time.time()
 
     print('Propagation: start polling')
-    await utils.results_polling(address=server.address(), status_func=client.get, download_func=client.download, id=id, file_type=file_type)
+    await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
     print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
     
     result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
