@@ -1,6 +1,6 @@
 from model import Base, engine
 
-from sqlalchemy import String, Integer
+from sqlalchemy import String, Integer, select
 from sqlalchemy.orm import Mapped, mapped_column, Session
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -11,6 +11,12 @@ class User(Base):
     _tgid: Mapped[str] = mapped_column("tgid", String)
     _username: Mapped[str] = mapped_column("username", String)
     _balance: Mapped[int] = mapped_column("balance", Integer)
+
+
+    @classmethod
+    def check_if_user_exists(cls, tgid: str) -> bool:
+        with Session(engine) as session:
+            return bool(session.scalar(select(User).where(User.tgid == tgid)))
 
     @hybrid_property
     def tgid(self):
