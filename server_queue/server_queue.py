@@ -1,7 +1,7 @@
 from workflows.controller import Workflow
 from configuration.config import ADDRESSES
 
-from sqlalchemy import String, ForeignKey, Float, Boolean, select
+from sqlalchemy import String, ForeignKey, Float, Boolean, select, delete
 from sqlalchemy.orm import Mapped, mapped_column, Session
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -151,8 +151,9 @@ class ServerQueue:
 QUEUE = ServerQueue()
 
 Base.metadata.create_all(engine)
-# with Session(engine) as session:
-#     SERVER_LIST = [Server(address=address, busy=False) for address in ADDRESSES]
-#     session.add_all(SERVER_LIST)
-#     session.commit()
+with Session(engine) as session:
+    session.query(Server).delete()
+    SERVER_LIST = [Server(address=address, eta_coefficient=1.0, busy=False) for address in ADDRESSES]
+    session.add_all(SERVER_LIST)
+    session.commit()
 
