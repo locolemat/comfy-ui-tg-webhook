@@ -12,12 +12,16 @@ from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, Workf
 
 from server_queue.server_queue import QueueItem
 from server_queue.server_queue import Server, QUEUE
-from server_queue.server_queue import create_session
 from server_queue.propagation import process_queue_result
+
+from model import create_session
+
+from users import User
 
 from states import states
 from utils import utils
 from client import client
+
 
 router = Router()
 
@@ -31,8 +35,13 @@ greeting_buttons_text = {
 @router.message(F.text, CommandStart())
 async def greeting_reply(message: Message, state: FSMContext):
     await state.clear()
+    username = message.from_user.first_name
+    tgid = message.from_user.id
+
+    print(tgid, username)
+
     await message.answer(
-        text=LanguageModel.with_context(template=language.greeting, context={"username":message.from_user.first_name,"tokens":10}),
+        text=LanguageModel.with_context(template=language.greeting, context={"username":username,"tokens":10}),
         reply_markup=greeting_keyboard()
     )
 

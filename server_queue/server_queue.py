@@ -7,9 +7,6 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from model import Base, engine
 
-def create_session():
-    return Session(engine)
-
 
 class Server(Base):
     __tablename__ = "Servers"

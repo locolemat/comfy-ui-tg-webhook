@@ -8,18 +8,18 @@ class User(Base):
     __tablename__ = 'Users'
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    _userid: Mapped[str] = mapped_column("userid", String)
+    _tgid: Mapped[str] = mapped_column("tgid", String)
     _username: Mapped[str] = mapped_column("username", String)
     _balance: Mapped[int] = mapped_column("balance", Integer)
 
     @hybrid_property
-    def userid(self):
-        return self._userid
+    def tgid(self):
+        return self._tgid
     
 
-    @userid.setter
-    def userid(self, userid):
-        self._userid = userid
+    @tgid.setter
+    def userid(self, tgid):
+        self._tgid = tgid
 
 
     @hybrid_property

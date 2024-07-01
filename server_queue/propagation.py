@@ -3,7 +3,9 @@ import os
 
 from bot import bot
 
-from server_queue.server_queue import Server, QueueItem, create_session
+from model import create_session
+
+from server_queue.server_queue import Server, QueueItem
 from configuration.localisation import LanguageModel, language
 
 from aiogram.types import FSInputFile
