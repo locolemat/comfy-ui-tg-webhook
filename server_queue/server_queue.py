@@ -153,7 +153,7 @@ QUEUE = ServerQueue()
 Base.metadata.create_all(engine)
 with Session(engine) as session:
     session.query(Server).delete()
-    SERVER_LIST = [Server(address=address, eta_coefficient=1.0, busy=False) for address in ADDRESSES]
+    SERVER_LIST = [Server(address=address, eta_coefficient=-1.0, busy=False) for address in ADDRESSES]
     session.add_all(SERVER_LIST)
     session.commit()
 

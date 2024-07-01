@@ -3,7 +3,7 @@ import os
 
 from bot import bot
 
-from server_queue.server_queue import Server, QueueItem
+from server_queue.server_queue import Server, QueueItem, create_session
 from configuration.localisation import LanguageModel, language
 
 from aiogram.types import FSInputFile
@@ -24,7 +24,10 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
     file_type = workflow.file_type
     folder = workflow.folder
 
+    session = create_session()
+    server = session.get(Server, server.id)
     server.busy = True
+    session.commit()
 
     await bot.send_message(
         chat_id=queue_item.user_id(),
@@ -55,12 +58,17 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
 
 
     server.busy = False
+    session.commit()
+    session.close()
 
 
 async def process_queue_result_image(queue_item: QueueItem, server: Server):
     print("BEGAN PROPAGATING EVENT")
 
+    session = create_session()
+    server = session.get(Server, server.id)
     server.busy = True
+    session.commit()
 
     await bot.send_message(
         chat_id=queue_item.user_id(),
@@ -92,3 +100,5 @@ async def process_queue_result_image(queue_item: QueueItem, server: Server):
     await bot.send_video(queue_item.user_id(), result, caption=language.video_ready)
 
     server.busy = False
+    session.commit()
+    session.close()
