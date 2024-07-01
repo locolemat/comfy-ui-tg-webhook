@@ -11,6 +11,12 @@ from aiogram.types import FSInputFile
 from utils import utils
 from client import client
 
+async def process_queue_result(queue_item: QueueItem, server: Server):
+    if queue_item.workflow().requires_image_upload:
+        await process_queue_result_image(queue_item=queue_item, server=server)
+    else:
+        await process_queue_result_text(queue_item=queue_item, server=server)
+
 async def process_queue_result_text(queue_item: QueueItem, server: Server):
     print("BEGAN PROPAGATING EVENT")
     await bot.send_message(

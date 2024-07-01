@@ -13,7 +13,7 @@ from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, Workf
 from server_queue.server_queue import QueueItem
 from server_queue.server_queue import Server, QUEUE
 from server_queue.server_queue import create_session
-from server_queue.propagation import process_queue_result_text, process_queue_result_image
+from server_queue.propagation import process_queue_result
 
 from states import states
 from utils import utils
@@ -156,7 +156,7 @@ async def from_text_generation(message: Message, state: FSMContext):
         queue_item = QUEUE.advance_queue()
 
         if queue_item:
-            await process_queue_result_text(queue_item=queue_item, server=server)
+            await process_queue_result(queue_item=queue_item, server=server)
 
     else:
         queue_item = QueueItem(prompt=message.text, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id)
@@ -214,7 +214,7 @@ async def from_image_generation(message: Message, state: FSMContext):
 
         queue_item = QUEUE.advance_queue()
         if queue_item:
-            await process_queue_result_image(queue_item=queue_item, server=server)
+            await process_queue_result(queue_item=queue_item, server=server)
 
     else:
         queue_item = QueueItem(prompt=photo_path, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id)

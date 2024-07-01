@@ -18,6 +18,7 @@ class Workflow():
 class WorkflowTextToVideo(Workflow):
     file_type = "mp4"
     folder = "videos"
+    requires_image_upload = False
 
     def __init__(self):
         self.load_workflow('text_to_video.json')
@@ -26,6 +27,7 @@ class WorkflowTextToVideo(Workflow):
 class WorkflowTextToImage(Workflow):
     file_type = "png"
     folder = "photos"
+    requires_image_upload = False
     
     def __init__(self):
         self.load_workflow('text_to_image.json')
@@ -34,6 +36,7 @@ class WorkflowTextToImage(Workflow):
 class WorkflowImageToVideo(Workflow):
     file_type = "mp4"
     folder = "videos"
+    requires_image_upload = True
     
     def __init__(self):
         self.load_workflow('image_to_video.json')
