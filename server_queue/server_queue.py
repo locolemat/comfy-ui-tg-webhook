@@ -1,24 +1,86 @@
 from workflows.controller import Workflow
 from configuration.config import ADDRESSES
 
-class Server:
-    def __init__(self, address: str, busy: bool = False):
+from sqlalchemy import String, ForeignKey, Float, Boolean, select
+from sqlalchemy.orm import Mapped, mapped_column, Session
+from sqlalchemy.ext.hybrid import hybrid_property
+
+from model import Base, engine
+
+def create_session():
+    return Session(engine)
+
+
+class Server(Base):
+    __tablename__ = "Servers"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    _address: Mapped[str] = mapped_column("address", String(30))
+    _eta_coefficient: Mapped[float] = mapped_column("eta_coefficient", Float)
+    _busy: Mapped[bool] = mapped_column("busy", Boolean)
+
+    
+    @hybrid_property
+    def address(self):
+        return self._address
+    
+
+    @address.setter
+    def address(self, address):
         self._address = address
+        
+    
+    @hybrid_property
+    def busy(self):
+        return self._busy
+    
+
+    @busy.setter
+    def busy(self, busy):
         self._busy = busy
 
 
-    def address(self, address: str | None = None) -> str | None:
-        if address is not None:
-            self._address = address
-        else:
-            return self._address
+    @hybrid_property
+    def eta_coefficient(self):
+        return self._eta_coefficient
+    
+
+    @eta_coefficient.setter
+    def eta_coefficient(self, eta_coefficient):
+        self._eta_coefficient = eta_coefficient
+
+    
+    @classmethod
+    def find_available(cls, session):
+        server = session.scalar(select(Server).where(Server.busy == 0))
+        return server
+
+
+    def __repr__(self):
+        return f'Server ID{self.id}: {self.address}, currently busy: {self.busy}. ETA Coefficient: {self.eta_coefficient}'
+
+    # def __init__(self, address: str, busy: bool = False):
+    #     self._address = address
+    #     self._busy = busy
+
+    # def address(self, address: str | None = None) -> str | None:
+    #     if address:
+    #         self.address = address
+
+
+
+    # def address(self, address: str | None = None) -> str | None:
+    #     if address is not None:
+    #         self._address = address
+    #     else:
+    #         return self._address
         
 
-    def busy(self, busy: bool | None = None) -> bool | None:
-        if busy is not None:
-            self._busy = busy
-        else:
-            return self._busy
+    # def busy(self, busy: bool | None = None) -> bool | None:
+    #     if busy is not None:
+    #         self._busy = busy
+    #     else:
+    #         return self._busy
 
 
 class ServerList:
@@ -87,4 +149,10 @@ class ServerQueue:
 
 
 QUEUE = ServerQueue()
-SERVER_LIST = ServerList(servers=[Server(address=address) for address in ADDRESSES])
+
+Base.metadata.create_all(engine)
+# with Session(engine) as session:
+#     SERVER_LIST = [Server(address=address, busy=False) for address in ADDRESSES]
+#     session.add_all(SERVER_LIST)
+#     session.commit()
+

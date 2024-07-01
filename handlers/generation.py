@@ -11,7 +11,8 @@ from keyboards.keyboards import greeting_keyboard, dimensions_keyboard
 from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, WorkflowImageToVideo
 
 from server_queue.server_queue import QueueItem
-from server_queue.server_queue import SERVER_LIST, QUEUE
+from server_queue.server_queue import Server, QUEUE
+from server_queue.server_queue import create_session
 from server_queue.propagation import process_queue_result_text, process_queue_result_image
 
 from states import states
@@ -109,10 +110,13 @@ async def from_text_generation(message: Message, state: FSMContext):
     folder = workflow.folder
     
 
-    server = SERVER_LIST.find_avaiable_server()
+    session = create_session()
+    server = Server.find_available(session)
 
     if server:
-        server.busy(True)
+
+        server.busy = True
+        session.commit()
 
         await message.answer(
             text = LanguageModel.with_context(template=language.pre_generation_message,
@@ -146,7 +150,9 @@ async def from_text_generation(message: Message, state: FSMContext):
             await message.answer_photo(result, caption=language.picture_ready)
         await state.clear()
 
-        server.busy(False)
+        server.busy = True
+        session.commit()
+
         queue_item = QUEUE.advance_queue()
 
         if queue_item:
@@ -160,6 +166,7 @@ async def from_text_generation(message: Message, state: FSMContext):
             text=LanguageModel.with_context(template=language.queue_added, context={"position": position})
         )
 
+    session.close()
 
 @router.message(F.photo, states.ImageToVideo.choose_prompt)
 async def from_image_generation(message: Message, state: FSMContext):
@@ -178,10 +185,13 @@ async def from_image_generation(message: Message, state: FSMContext):
     photo_path = os.path.join(UPLOAD_FOLDER, image_name)
     await message.bot.download(file=photo_id, destination=photo_path)
     
-    server = SERVER_LIST.find_avaiable_server()
+    session = create_session()
+    server = Server.find_available(session)
 
     if server:
-        server.busy(True)
+        server.busy = True
+        session.commit()
+
         dimensions = utils.get_dimensions(data["dimensions"])
         await client.upload_image(address=server.address(), image_path=photo_path)
 
@@ -197,7 +207,8 @@ async def from_image_generation(message: Message, state: FSMContext):
 
         await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
 
-        server.busy(False)
+        server.busy = False
+        session.commit()
 
         await state.clear()
 
@@ -212,3 +223,10 @@ async def from_image_generation(message: Message, state: FSMContext):
         await message.answer(
             text=LanguageModel.with_context(template=language.queue_added, context={"position": position})
         )
+
+    session.close()
+
+
+
+
+    
