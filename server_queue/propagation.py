@@ -24,7 +24,7 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
     file_type = workflow.file_type
     folder = workflow.folder
 
-    server.busy(True)
+    server.busy = True
 
     await bot.send_message(
         chat_id=queue_item.user_id(),
@@ -36,7 +36,7 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
 
     print('Propagation: make a query')
 
-    await client.prompt_query(prompt=queue_item.prompt(), address=server.address(), id=id, workflow=workflow())
+    await client.prompt_query(prompt=queue_item.prompt(), address=server.address, id=id, workflow=workflow())
 
     start_time = time.time()
 
@@ -54,13 +54,13 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
         await bot.send_photo(queue_item.user_id(), result, caption=language.picture_ready)
 
 
-    server.busy(False)
+    server.busy = False
 
 
 async def process_queue_result_image(queue_item: QueueItem, server: Server):
     print("BEGAN PROPAGATING EVENT")
 
-    server.busy(True)
+    server.busy = True
 
     await bot.send_message(
         chat_id=queue_item.user_id(),
@@ -75,14 +75,14 @@ async def process_queue_result_image(queue_item: QueueItem, server: Server):
     folder = workflow.folder
     print('Propagation: image upload')
 
-    await client.upload_image(address=server.address(), image_path=queue_item.prompt())
+    await client.upload_image(address=server.address, image_path=queue_item.prompt())
 
     print('Propagation: make a query')
-    await client.prompt_query(address=server.address(), prompt=os.path.basename(queue_item.prompt()), id = id, workflow=workflow())
+    await client.prompt_query(address=server.address, prompt=os.path.basename(queue_item.prompt()), id = id, workflow=workflow())
 
     start_time = time.time()
     print('Propagation: start polling')
-    await utils.results_polling(address=server.address(), status_func=client.get, download_func=client.download, id=id, file_type=file_type)
+    await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
     print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
 
     result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
@@ -91,4 +91,4 @@ async def process_queue_result_image(queue_item: QueueItem, server: Server):
 
     await bot.send_video(queue_item.user_id(), result, caption=language.video_ready)
 
-    server.busy(False)
+    server.busy = False

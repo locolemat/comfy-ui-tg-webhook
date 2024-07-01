@@ -134,10 +134,10 @@ async def from_text_generation(message: Message, state: FSMContext):
         id = utils.generate_string(10)
         print(f"Query ID: {id}")
 
-        await client.prompt_query(prompt=message.text, address=server.address(), id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"])
+        await client.prompt_query(prompt=message.text, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"])
 
         start_time = time.time()
-        await utils.results_polling(address=server.address(), status_func=client.get, download_func=client.download, id=id, file_type=file_type)
+        await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
         print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
         
         result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
@@ -193,12 +193,12 @@ async def from_image_generation(message: Message, state: FSMContext):
         session.commit()
 
         dimensions = utils.get_dimensions(data["dimensions"])
-        await client.upload_image(address=server.address(), image_path=photo_path)
+        await client.upload_image(address=server.address, image_path=photo_path)
 
-        await client.prompt_query(address=server.address(), prompt=image_name, id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"])
+        await client.prompt_query(address=server.address, prompt=image_name, id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"])
 
         start_time = time.time()
-        await utils.results_polling(address=server.address(), status_func=client.get, download_func=client.download, id=id, file_type=file_type)
+        await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
         print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
 
         result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
@@ -229,4 +229,3 @@ async def from_image_generation(message: Message, state: FSMContext):
 
 
 
-    
