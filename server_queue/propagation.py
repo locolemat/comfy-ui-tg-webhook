@@ -30,6 +30,8 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
     file_type = workflow.file_type
     folder = workflow.folder
 
+    dimensions = utils.get_dimensions(queue_item.dimensions())
+
     session = create_session()
     server = session.get(Server, server.id)
     server.busy = True
@@ -45,7 +47,7 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
 
     print('Propagation: make a query')
 
-    await client.prompt_query(prompt=queue_item.prompt(), address=server.address, id=id, workflow=workflow())
+    await client.prompt_query(prompt=queue_item.prompt(), address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"])
 
     start_time = time.time()
 
@@ -84,6 +86,8 @@ async def process_queue_result_image(queue_item: QueueItem, server: Server):
                                         )
     )
 
+    dimensions = utils.get_dimensions(queue_item.dimensions())
+
     workflow = queue_item.workflow()
     file_type = workflow.file_type
     folder = workflow.folder
@@ -92,7 +96,7 @@ async def process_queue_result_image(queue_item: QueueItem, server: Server):
     await client.upload_image(address=server.address, image_path=queue_item.prompt())
 
     print('Propagation: make a query')
-    await client.prompt_query(address=server.address, prompt=os.path.basename(queue_item.prompt()), id = id, workflow=workflow())
+    await client.prompt_query(address=server.address, prompt=os.path.basename(queue_item.prompt()), id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"])
 
     start_time = time.time()
     print('Propagation: start polling')
