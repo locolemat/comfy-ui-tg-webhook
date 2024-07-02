@@ -38,7 +38,7 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
 
     session = create_session()
     server = session.get(Server, server.id)
-    user = User.return_user_if_exists(session=session, tg_id=queue_item.user_id())
+    user = User.return_user_if_exists(session=session, tgid=queue_item.user_id())
 
     model = user.preferred_model
 
