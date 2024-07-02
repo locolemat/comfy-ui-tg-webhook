@@ -14,9 +14,9 @@ class User(Base):
 
 
     @classmethod
-    def check_if_user_exists(cls, tgid: str) -> User | None:
+    def check_if_user_exists(cls, tgid: str):
         with Session(engine) as session:
-            return session.scalar(select(User).where(User.tgid == tgid)
+            return session.scalar(select(User).where(User.tgid == tgid))
 
     @hybrid_property
     def tgid(self):
@@ -24,7 +24,7 @@ class User(Base):
     
 
     @tgid.setter
-    def userid(self, tgid):
+    def tgid(self, tgid):
         self._tgid = tgid
 
 

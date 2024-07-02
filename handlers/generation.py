@@ -99,14 +99,34 @@ async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
     data = call.data.split("_")[-1]
     await state.update_data(dimensions=data)
-
+    
     await call.message.answer(
-        text = language.prompt_invitation
+        text = language.video_length_prompt
     )
 
 
-    await state.set_state(states.TextToImage.choose_prompt)
+    await state.set_state(states.TextToImage.choose_length)
     await state.update_data(workflow=WorkflowTextToImage)
+
+
+@router.message(F.text, states.TextToImage.choose_length)
+async def choose_length(message: Message, state: FSMContext):
+    length = 3
+
+    if message.text.split()[0].isdigit():
+        length = int(message.text)
+    
+    if length < 2:
+        length = 2
+    elif length > 20:
+        length = 20
+
+    await message.answer(
+        text = language.prompt_invitation
+    )
+
+    await state.update_data(length=length)
+    await state.set_state(states.TextToImage.choose_prompt)
 
 
 @router.callback_query(states.TextToVideo.choose_dimensions, F.data.startswith('d'))
@@ -123,7 +143,7 @@ async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
     await state.set_state(states.TextToVideo.choose_prompt)
     await state.update_data(workflow=WorkflowTextToVideo)
         
-    
+
 @router.message(F.text, states.TextToImage.choose_prompt)        
 @router.message(F.text, states.TextToVideo.choose_prompt)
 async def from_text_generation(message: Message, state: FSMContext):
@@ -133,6 +153,7 @@ async def from_text_generation(message: Message, state: FSMContext):
     file_type = workflow.file_type
     folder = workflow.folder
     
+    length = data.get("length")
 
     session = create_session()
     server = Server.find_available(session)
@@ -158,7 +179,7 @@ async def from_text_generation(message: Message, state: FSMContext):
         id = utils.generate_string(10)
         print(f"Query ID: {id}")
 
-        await client.prompt_query(prompt=message.text, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"])
+        await client.prompt_query(prompt=message.text, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*6)
 
         start_time = time.time()
         await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
