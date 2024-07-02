@@ -88,10 +88,10 @@ async def image_to_video_prompt(call: CallbackQuery, state: FSMContext):
     await state.update_data(dimensions=data)
 
     await call.message.answer(
-        text = language.video_prompt_invitation
+        text = language.video_length_prompt
     )
 
-    await state.set_state(states.ImageToVideo.choose_prompt)
+    await state.set_state(states.ImageToVideo.choose_length)
     await state.update_data(workflow=WorkflowImageToVideo)
 
 
@@ -143,6 +143,26 @@ async def choose_length(message: Message, state: FSMContext):
 
     await state.update_data(length=length)
     await state.set_state(states.TextToVideo.choose_prompt)
+
+
+@router.message(F.text, states.ImageToVideo.choose_length)
+async def choose_length_i2v(message: Message, state: FSMContext):
+    length = 3
+
+    if message.text.split()[0].isdigit():
+        length = int(message.text)
+    
+    if length < 2:
+        length = 2
+    elif length > 6:
+        length = 6
+
+    await message.answer(
+        text = language.video_prompt_invitation
+    )
+
+    await state.update_data(length=length)
+    await state.set_state(states.ImageToVideo.choose_prompt)
 
 
 @router.message(F.text, states.TextToImage.choose_prompt)        
@@ -223,7 +243,6 @@ async def from_text_generation(message: Message, state: FSMContext):
             text=LanguageModel.with_context(template=language.queue_added, context={"position": position})
         )
 
-    session.close()
 
 @router.message(F.photo, states.ImageToVideo.choose_prompt)
 async def from_image_generation(message: Message, state: FSMContext):
@@ -236,22 +255,30 @@ async def from_image_generation(message: Message, state: FSMContext):
 
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload')
     photo_id = message.photo[-1].file_id
+    length = data.get("length")
 
     id = utils.generate_string(10)
     image_name = f"{id}_up.png"
     photo_path = os.path.join(UPLOAD_FOLDER, image_name)
     await message.bot.download(file=photo_id, destination=photo_path)
     
+
     session = create_session()
     server = Server.find_available(session)
+    session.close()
 
     if server:
+        server_id = server.id   
+        
+        session = create_session()
+        server = session.get(Server, server_id)
         server.busy = True
+        session.commit()
 
         dimensions = utils.get_dimensions(data["dimensions"])
         await client.upload_image(address=server.address, image_path=photo_path)
 
-        await client.prompt_query(address=server.address, prompt=image_name, id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"])
+        await client.prompt_query(address=server.address, prompt=image_name, id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], length=length)
 
         start_time = time.time()
         await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
@@ -263,9 +290,15 @@ async def from_image_generation(message: Message, state: FSMContext):
 
         await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
 
-        server.busy = False
-
         await state.clear()
+
+        session.close()
+
+        session = create_session()
+        server = session.get(Server, server_id)
+        server.busy = False
+        session.commit()
+        session.close()
 
         queue_item = QUEUE.advance_queue()
         if queue_item:
@@ -279,7 +312,6 @@ async def from_image_generation(message: Message, state: FSMContext):
             text=LanguageModel.with_context(template=language.queue_added, context={"position": position})
         )
 
-    session.close()
 
 
 
