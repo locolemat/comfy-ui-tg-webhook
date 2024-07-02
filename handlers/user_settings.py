@@ -1,6 +1,6 @@
 from aiogram import Router, F
 from aiogram.filters import StateFilter, Command
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, InputMediaPhoto
 from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
@@ -29,8 +29,6 @@ model_description_localisation = {
     "photon_v1.safetensors": language.model_photon_desc,
     "realvisxlV40_v40LightningBakedvae.safetensors": language.model_realvisxl_desc
 }
-
-print(gallery.mappings)
 
 @router.message(Command('generate'), StateFilter(None))
 async def begin_generation_command(message: Message, state: FSMContext):
@@ -90,6 +88,14 @@ async def display_model_details(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
 
     model_name = call.data.split(':')[-1]
+
+    model_gallery = gallery.mappings.get(model_name_localisation(model_name).lower())
+
+    if model_gallery:
+        await call.message.bot.send_media_group(
+            chat_id=call.message.chat.id,
+            media = [InputMediaPhoto(media=photo_id) for photo_id in model_gallery]
+        )
 
     description_text = model_description_localisation.get(model_name)
 
