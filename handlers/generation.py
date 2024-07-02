@@ -206,7 +206,7 @@ async def from_text_generation(message: Message, state: FSMContext):
 
         session = create_session()
         server = session.get(Server, server_id)
-        server.busy = True
+        server.busy = False
         session.commit()
         session.close()
 
