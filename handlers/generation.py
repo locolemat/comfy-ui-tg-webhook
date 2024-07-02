@@ -14,6 +14,7 @@ from server_queue.server_queue import QueueItem
 from server_queue.server_queue import Server, QUEUE
 from server_queue.propagation import process_queue_result
 
+
 from model import create_session
 
 from users import User
@@ -157,10 +158,16 @@ async def from_text_generation(message: Message, state: FSMContext):
 
     session = create_session()
     server = Server.find_available(session)
+    session.close()
 
     if server:
 
+        server_id = server.id   
+        
+        session = create_session()
+        server = session.get(Server, server_id)
         server.busy = True
+        session.commit()
 
         await message.answer(
             text = LanguageModel.with_context(template=language.pre_generation_message,
@@ -194,8 +201,11 @@ async def from_text_generation(message: Message, state: FSMContext):
             await message.answer_photo(result, caption=language.picture_ready)
         await state.clear()
 
+        session = create_session()
+        server = session.get(Server, server_id)
         server.busy = True
         session.commit()
+        session.close()
 
         queue_item = QUEUE.advance_queue()
 
@@ -251,7 +261,6 @@ async def from_image_generation(message: Message, state: FSMContext):
         await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
 
         server.busy = False
-        session.commit()
 
         await state.clear()
 

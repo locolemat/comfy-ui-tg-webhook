@@ -22,7 +22,7 @@ async def get(id, address, file_type="png"):
         response = await session.get(f"http://{address}/view?filename={id}_00001{'_'*(file_type == 'png')}.{file_type}&subfolder=&type=output")
         status = response.status
         response.close()
-        print(f'The status of the file request: {status}.')
+        # print(f'The status of the file request: {status}.')
         return status
     
 
