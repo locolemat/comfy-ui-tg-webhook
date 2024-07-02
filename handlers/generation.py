@@ -168,6 +168,7 @@ async def from_text_generation(message: Message, state: FSMContext):
         server = session.get(Server, server_id)
         server.busy = True
         session.commit()
+        session.close()
 
         await message.answer(
             text = LanguageModel.with_context(template=language.pre_generation_message,
