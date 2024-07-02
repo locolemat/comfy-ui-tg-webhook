@@ -9,7 +9,7 @@ from keyboards import greeting_keyboard
 
 from model import create_session
 
-from user import User
+from users import User
 from states import states
 
 router = Router()
