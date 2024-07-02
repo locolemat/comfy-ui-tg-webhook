@@ -168,7 +168,6 @@ async def from_text_generation(message: Message, state: FSMContext):
         server = session.get(Server, server_id)
         server.busy = True
         session.commit()
-        session.close()
 
         await message.answer(
             text = LanguageModel.with_context(template=language.pre_generation_message,
@@ -201,6 +200,9 @@ async def from_text_generation(message: Message, state: FSMContext):
         elif folder == "photos":
             await message.answer_photo(result, caption=language.picture_ready)
         await state.clear()
+
+
+        session.close()
 
         session = create_session()
         server = session.get(Server, server_id)
