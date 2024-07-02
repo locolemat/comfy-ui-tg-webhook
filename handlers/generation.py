@@ -101,15 +101,30 @@ async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
     await state.update_data(dimensions=data)
     
     await call.message.answer(
+        text = language.prompt_invitation
+    )
+
+
+    await state.set_state(states.TextToImage.choose_prompt)
+    await state.update_data(workflow=WorkflowTextToImage)
+
+
+@router.callback_query(states.TextToVideo.choose_dimensions, F.data.startswith('d'))
+async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
+    await call.message.delete()
+    data = call.data.split("_")[-1]
+    await state.update_data(dimensions=data)
+
+    await call.message.answer(
         text = language.video_length_prompt
     )
 
 
-    await state.set_state(states.TextToImage.choose_length)
-    await state.update_data(workflow=WorkflowTextToImage)
+    await state.set_state(states.TextToVideo.choose_length)
+    await state.update_data(workflow=WorkflowTextToVideo)
+        
 
-
-@router.message(F.text, states.TextToImage.choose_length)
+@router.message(F.text, states.TextToVideo.choose_length)
 async def choose_length(message: Message, state: FSMContext):
     length = 3
 
@@ -126,23 +141,8 @@ async def choose_length(message: Message, state: FSMContext):
     )
 
     await state.update_data(length=length)
-    await state.set_state(states.TextToImage.choose_prompt)
-
-
-@router.callback_query(states.TextToVideo.choose_dimensions, F.data.startswith('d'))
-async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
-    await call.message.delete()
-    data = call.data.split("_")[-1]
-    await state.update_data(dimensions=data)
-
-    await call.message.answer(
-        text = language.prompt_invitation
-    )
-
-
     await state.set_state(states.TextToVideo.choose_prompt)
-    await state.update_data(workflow=WorkflowTextToVideo)
-        
+
 
 @router.message(F.text, states.TextToImage.choose_prompt)        
 @router.message(F.text, states.TextToVideo.choose_prompt)
