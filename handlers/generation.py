@@ -2,7 +2,7 @@ import os
 import time
 
 from aiogram import Router, F
-from aiogram.filters import CommandStart, StateFilter
+from aiogram.filters import CommandStart, StateFilter, Command
 from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.fsm.context import FSMContext
 
@@ -31,6 +31,21 @@ greeting_buttons_text = {
     language.button_generate_text_video,
     language.button_generate_image_video
 }
+
+@router.message(F.text, Command('armageddon'))
+async def unleash_gallery(message: Message, state: FSMContext):
+    tgid = message.from_user.id
+
+    upload_directory = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload')
+    files_to_send = os.listdir(upload_directory)
+
+    with open('file_ids.txt', 'a') as f:
+        for file in files_to_send:
+            photo = FSInputFile(os.path.join(upload_directory, file), filename=f"{file}_new.png", chunk_size = 1024)
+            uploaded_file = await message.bot.send_photo(chat_id=tgid, photo=photo)
+            file_id = uploaded_file['photo'][0]['file_id']
+            f.write(f'{file}:{file_id}')
+
 
 
 @router.message(F.text, CommandStart())
