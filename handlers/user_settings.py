@@ -13,6 +13,14 @@ from users import User
 
 router = Router()
 
+model_name_localisation = {
+    "anithing_v11Pruned.safetensors": language.model_anithing,
+    "dreamshaper_8.safetensors": language.model_dreamshaper,
+    "epicrealism_naturalSinRC1VAE.safetensors": language.model_epicrealism,
+    "photon_v1.safetensors": language.model_photon,
+    "realvisxlV40_v40LightningBakedvae.safetensors": language.model_realvisxl
+}
+
 model_description_localisation = {
     "anithing_v11Pruned.safetensors": language.model_anithing_desc,
     "dreamshaper_8.safetensors": language.model_dreamshaper_desc,
@@ -53,7 +61,7 @@ async def choose_model_command(message: Message, state: FSMContext):
     session.close()
 
     await message.answer(
-        text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": model_description_localisation.get(model)}),
+        text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": model_name_localisation.get(model)}),
         reply_markup=choose_model_keyboard()
     )
 
@@ -70,7 +78,7 @@ async def choose_model(call: CallbackQuery, state: FSMContext):
     session.close()
 
     await call.message.answer(
-        text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": model_description_localisation.get(model)}),
+        text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": model_name_localisation.get(model)}),
         reply_markup=choose_model_keyboard()
     )
 
