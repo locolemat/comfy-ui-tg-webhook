@@ -2,7 +2,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram import types
 from configuration.localisation import language
 
-def greeting_keyboard() -> InlineKeyboardBuilder:
+def generation_keyboard() -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
     builder.add(types.InlineKeyboardButton(text=language.button_generate_text_image, callback_data=language.button_generate_text_image))
@@ -25,3 +25,13 @@ def dimensions_keyboard() -> InlineKeyboardBuilder:
 
     return builder.as_markup()
 
+
+def greeting_keyboard() -> InlineKeyboardBuilder:
+    builder = InlineKeyboardBuilder()
+
+    builder.add(types.InlineKeyboardButton(text=language.user_payment, callback_data="payment"))
+    builder.add(types.InlineKeyboardButton(text=language.choose_model, callback_data="choose_model"))
+    builder.add(types.InlineKeyboardButton(text=language.generate_begin, callback_data="generate"))
+
+    builder.adjust(2)
+    return builder.as_markup()

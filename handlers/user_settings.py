@@ -1,11 +1,11 @@
 from aiogram import Router, F
-from aiogram.filters import CommandStart, StateFilter
+from aiogram.filters import CommandStart, StateFilter, Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
 
-from keyboards import greeting_keyboard
+from keyboards import generation_keyboard, greeting_keyboard
 
 from model import create_session
 
@@ -40,4 +40,14 @@ async def greeting_reply(message: Message, state: FSMContext):
     await message.answer(
         text=LanguageModel.with_context(template=language.greeting, context={"username":username,"tokens":balance}),
         reply_markup=greeting_keyboard()
+    )
+
+
+@router.callback_query(Command('generate'), StateFilter(None))
+@router.callback_query(F.data=="generate_begin", StateFilter(None))
+async def begin_generation(call: CallbackQuery, state: FSMContext):
+
+    await call.message.answer(
+        text=language.generation_begin_msg,
+        reply_markup=generation_keyboard()
     )
