@@ -133,8 +133,8 @@ async def choose_length(message: Message, state: FSMContext):
     
     if length < 2:
         length = 2
-    elif length > 20:
-        length = 20
+    elif length > 6:
+        length = 6
 
     await message.answer(
         text = language.prompt_invitation
