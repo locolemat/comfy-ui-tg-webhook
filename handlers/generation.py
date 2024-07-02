@@ -32,26 +32,6 @@ greeting_buttons_text = {
     language.button_generate_image_video
 }
 
-@router.message(F.text, Command('armageddon'))
-async def unleash_gallery(message: Message, state: FSMContext):
-    tgid = message.from_user.id
-
-    upload_directory = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload', 'gallery')
-    files_to_send = os.listdir(upload_directory)
-
-    with open('file_ids.txt', 'a') as f:
-        for file in files_to_send:
-            photo = FSInputFile(os.path.join(upload_directory, file), filename=f"{file}_new.png", chunk_size = 1024)
-            uploaded_file = await message.bot.send_photo(chat_id=tgid, photo=photo)
-            file_id = uploaded_file.photo[0].file_id
-            f.write(f'{file}:{file_id}\n')
-
-@router.message(F.text, Command('test_photo'))
-async def test_photo_send_by_id(message: Message):
-    tgid = message.from_user.id
-    await message.bot.send_photo(chat_id=tgid, photo='AgACAgIAAxkDAAINJWaEIpt5Y3Ez3ZaC02XOydGkgWeHAAJS2zEbiiIgSAKkAjMXjAPIAQADAgADcwADNQQ')
-
-
 
 @router.message(F.text, CommandStart())
 async def greeting_reply(message: Message, state: FSMContext):
