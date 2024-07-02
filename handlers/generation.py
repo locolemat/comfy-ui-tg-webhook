@@ -179,7 +179,7 @@ async def from_text_generation(message: Message, state: FSMContext):
         id = utils.generate_string(10)
         print(f"Query ID: {id}")
 
-        await client.prompt_query(prompt=message.text, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*6)
+        await client.prompt_query(prompt=message.text, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12)
 
         start_time = time.time()
         await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
