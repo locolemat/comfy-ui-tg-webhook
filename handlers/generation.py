@@ -134,8 +134,8 @@ async def choose_length(message: Message, state: FSMContext):
     
     if length < 2:
         length = 2
-    elif length > 6:
-        length = 6
+    elif length > 10:
+        length = 10
 
     await message.answer(
         text = language.prompt_invitation
@@ -154,8 +154,8 @@ async def choose_length_i2v(message: Message, state: FSMContext):
     
     if length < 2:
         length = 2
-    elif length > 6:
-        length = 6
+    elif length > 10:
+        length = 10
 
     await message.answer(
         text = language.video_prompt_invitation
