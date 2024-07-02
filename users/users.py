@@ -11,12 +11,25 @@ class User(Base):
     _tgid: Mapped[str] = mapped_column("tgid", String)
     _username: Mapped[str] = mapped_column("username", String)
     _balance: Mapped[int] = mapped_column("balance", Integer)
+    _preferred_model: Mapped[str] = mapped_column("preferred_model", String)
+
 
 
     @classmethod
     def check_if_user_exists(cls, tgid: str):
         with Session(engine) as session:
             return session.scalar(select(User).where(User.tgid == tgid))
+
+
+    @hybrid_property
+    def preferred_model(self):
+        return self._preferred_model
+    
+
+    @preferred_model.setter
+    def preferred_model(self, preferred_model):
+        self._preferred_model = preferred_model
+
 
     @hybrid_property
     def tgid(self):

@@ -27,7 +27,8 @@ async def greeting_reply(message: Message, state: FSMContext):
     if user is None:
         username = message.from_user.first_name
         balance = 10
-        user = User(username=username, tgid=tgid, balance=balance)
+        preferred_model = "anithing_v11Pruned.safetensors"
+        user = User(username=username, tgid=tgid, balance=balance, preferred_model=preferred_model)
         session.add(user)
         session.commit()
 
