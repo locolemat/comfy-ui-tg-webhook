@@ -7,8 +7,10 @@ from model import create_session
 
 from server_queue.server_queue import Server, QueueItem
 from configuration.localisation import LanguageModel, language
+from users import User
 
 from aiogram.types import FSInputFile
+
 
 from utils import utils
 from client import client
@@ -36,6 +38,9 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
 
     session = create_session()
     server = session.get(Server, server.id)
+    user = User.return_user_if_exists(session)
+
+    model = user.preferred_model
 
     length = queue_item.length() or 0
 
@@ -49,7 +54,7 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
 
     print('Propagation: make a query')
 
-    await client.prompt_query(prompt=queue_item.prompt(), address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12)
+    await client.prompt_query(prompt=queue_item.prompt(), address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12, model=model)
 
     start_time = time.time()
 

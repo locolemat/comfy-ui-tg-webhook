@@ -164,7 +164,7 @@
     },
     "41": {
       "inputs": {
-        "ckpt_name": "dreamshaper_8.safetensors"
+        "ckpt_name": "${model}"
       },
       "class_type": "CheckpointLoaderSimple",
       "_meta": {

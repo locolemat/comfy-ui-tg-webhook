@@ -290,7 +290,7 @@
                             "Node name for S&R": "CheckpointLoaderSimple"
                         },
                         "widgets_values": [
-                            "anithing_v11Pruned.safetensors"
+                            "${model}"
                         ]
                     },
                     {

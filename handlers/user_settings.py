@@ -5,12 +5,11 @@ from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
 
-from keyboards import generation_keyboard, greeting_keyboard, choose_model_keyboard, confim_model_keyboard
+from keyboards import generation_keyboard, greeting_keyboard, choose_model_keyboard, confirm_model_keyboard
 
 from model import create_session
 
 from users import User
-from states import states
 
 router = Router()
 
@@ -84,7 +83,7 @@ async def display_model_details(call: CallbackQuery, state: FSMContext):
 
     await call.message.answer(
         text = description_text,
-        reply_markup=confim_model_keyboard(model_name=model_name)
+        reply_markup=confirm_model_keyboard(model_name=model_name)
     )
 
 
@@ -95,7 +94,6 @@ async def confirm_model_choice_message(call: CallbackQuery, state: FSMContext):
     model_name = call.data.split(':')[-1]
 
     tgid = call.message.chat.id
-    print(tgid)
 
     session = create_session()
     user = User.return_user_if_exists(tgid=tgid, session=session)
