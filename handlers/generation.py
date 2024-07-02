@@ -161,7 +161,6 @@ async def from_text_generation(message: Message, state: FSMContext):
     if server:
 
         server.busy = True
-        session.commit()
 
         await message.answer(
             text = LanguageModel.with_context(template=language.pre_generation_message,
@@ -235,7 +234,6 @@ async def from_image_generation(message: Message, state: FSMContext):
 
     if server:
         server.busy = True
-        session.commit()
 
         dimensions = utils.get_dimensions(data["dimensions"])
         await client.upload_image(address=server.address, image_path=photo_path)
