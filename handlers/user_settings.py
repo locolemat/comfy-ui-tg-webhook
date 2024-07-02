@@ -4,6 +4,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
+from configuration.gallery import gallery
 
 from keyboards import generation_keyboard, choose_model_keyboard, confirm_model_keyboard
 
@@ -29,6 +30,7 @@ model_description_localisation = {
     "realvisxlV40_v40LightningBakedvae.safetensors": language.model_realvisxl_desc
 }
 
+print(gallery.mappings)
 
 @router.message(Command('generate'), StateFilter(None))
 async def begin_generation_command(message: Message, state: FSMContext):
