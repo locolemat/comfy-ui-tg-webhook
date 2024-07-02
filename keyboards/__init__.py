@@ -1,1 +1,1 @@
-from .keyboards import generation_keyboard, greeting_keyboard, dimensions_keyboard
+from .keyboards import generation_keyboard, greeting_keyboard, dimensions_keyboard, choose_model_keyboard

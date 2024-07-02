@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
 
-from keyboards import generation_keyboard, greeting_keyboard
+from keyboards import generation_keyboard, greeting_keyboard, choose_model_keyboard
 
 from model import create_session
 
@@ -51,4 +51,14 @@ async def begin_generation(call: CallbackQuery, state: FSMContext):
     await call.message.answer(
         text=language.generate_begin_msg,
         reply_markup=generation_keyboard()
+    )
+
+
+@router.callback_query(Command('model'), StateFilter(None))
+@router.callback_query(F.data=="choose_model", StateFilter(None))
+async def choose_model(call: CallbackQuery, state: FSMContext):
+
+    await call.message.answer(
+        text=language.model_choice_desc,
+        reply_markup=choose_model_keyboard()
     )

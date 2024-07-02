@@ -35,3 +35,17 @@ def greeting_keyboard() -> InlineKeyboardBuilder:
 
     builder.adjust(2)
     return builder.as_markup()
+
+
+def choose_model_keyboard() -> InlineKeyboardBuilder:
+    builder = InlineKeyboardBuilder()
+
+    builder.add(types.InlineKeyboardButton(text=language.model_anithing, callback_data="anithing_v11Pruned.safetensors"))
+    builder.add(types.InlineKeyboardButton(text=language.model_dreamshaper, callback_data="dreamshaper_8.safetensors"))
+    builder.add(types.InlineKeyboardButton(text=language.model_epicrealism, callback_data="epicrealism_naturalSinRC1VAE.safetensors"))
+    builder.add(types.InlineKeyboardButton(text=language.model_photon, callback_data="photon_v1.safetensors"))
+    builder.add(types.InlineKeyboardButton(text=language.model_realvisxl, callback_data="realvisxlV40_v40LightningBakedvae.safetensors"))
+
+
+    builder.adjust(1)
+    return builder.as_markup()
