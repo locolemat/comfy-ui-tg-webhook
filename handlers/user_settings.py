@@ -45,17 +45,32 @@ async def begin_generation(call: CallbackQuery, state: FSMContext):
 async def choose_model_command(message: Message, state: FSMContext):
     await message.delete()
 
+    tgid = message.chat.id
+
+    session = create_session()
+    user = User.return_user_if_exists(tgid=tgid, session=session)
+    model = user.preferred_model
+    session.close()
+
     await message.answer(
-        text=language.model_choice_desc,
+        text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": model_description_localisation.get(model)}),
         reply_markup=choose_model_keyboard()
     )
+
 
 @router.callback_query(F.data=="choose_model", StateFilter(None))
 async def choose_model(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
 
+    tgid = call.message.chat.id
+
+    session = create_session()
+    user = User.return_user_if_exists(tgid=tgid, session=session)
+    model = user.preferred_model
+    session.close()
+
     await call.message.answer(
-        text=language.model_choice_desc,
+        text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": model_description_localisation.get(model)}),
         reply_markup=choose_model_keyboard()
     )
 
