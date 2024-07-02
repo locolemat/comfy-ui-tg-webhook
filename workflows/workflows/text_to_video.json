@@ -21,7 +21,7 @@
       "inputs": {
         "width": "${width}",
         "height": "${height}",
-        "video_frames": "{$frames}",
+        "video_frames": "${frames}",
         "motion_bucket_id": 20,
         "fps": 6,
         "augmentation_level": 0.01,
