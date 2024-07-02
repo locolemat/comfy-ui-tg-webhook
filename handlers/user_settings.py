@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
 
-from keyboards import generation_keyboard, greeting_keyboard, choose_model_keyboard
+from keyboards import generation_keyboard, greeting_keyboard, choose_model_keyboard, confim_model_keyboard
 
 from model import create_session
 
@@ -13,6 +13,14 @@ from users import User
 from states import states
 
 router = Router()
+
+model_description_localisation = {
+    "anithing_v11Pruned.safetensors": language.model_anithing_desc,
+    "dreamshaper_8.safetensors": language.model_dreamshaper_desc,
+    "epicrealism_naturalSinRC1VAE.safetensors": language.model_epicrealism_desc,
+    "photon_v1.safetensors": language.model_photon_desc,
+    "realvisxlV40_v40LightningBakedvae.safetensors": language.model_realvisxl_desc
+}
 
 @router.message(F.text, CommandStart())
 async def greeting_reply(message: Message, state: FSMContext):
@@ -62,3 +70,17 @@ async def choose_model(call: CallbackQuery, state: FSMContext):
         text=language.model_choice_desc,
         reply_markup=choose_model_keyboard()
     )
+
+
+@router.callback_query(F.data.startswith('model:'), StateFilter(None))
+async def display_model_details(call: CallbackQuery, state: FSMContext):
+    model_name = call.data.split(':')[-1]
+
+    description_text = model_description_localisation.get(model_name)
+
+    await call.message.answer(
+        text = description_text,
+        reply_markup=confim_model_keyboard(model_name=model_name)
+    )
+
+
