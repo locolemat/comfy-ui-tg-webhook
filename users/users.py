@@ -14,11 +14,9 @@ class User(Base):
     _preferred_model: Mapped[str] = mapped_column("preferred_model", String)
 
 
-
     @classmethod
-    def check_if_user_exists(cls, tgid: str):
-        with Session(engine) as session:
-            return session.scalar(select(User).where(User.tgid == tgid))
+    def return_user_if_exists(cls, tgid: str, session):
+        return session.scalar(select(User).where(User.tgid == tgid))
 
 
     @hybrid_property

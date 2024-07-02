@@ -54,7 +54,7 @@ def choose_model_keyboard() -> InlineKeyboardBuilder:
 def confim_model_keyboard(model_name: str) -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
-    builder.add(types.InlineKeyboardButton(text=language.model_confirm, callback_data=model_name))
+    builder.add(types.InlineKeyboardButton(text=language.model_confirm, callback_data=f'confirm_model:{model_name}'))
     builder.add(types.InlineKeyboardButton(text=language.model_reject, callback_data='choose_model'))
 
     builder.adjust(2)

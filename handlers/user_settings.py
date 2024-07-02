@@ -30,7 +30,7 @@ async def greeting_reply(message: Message, state: FSMContext):
 
     session = create_session()
 
-    user = User.check_if_user_exists(tgid=tgid)
+    user = User.return_user_if_exists(tgid=tgid)
 
     if user is None:
         username = message.from_user.first_name
@@ -88,3 +88,23 @@ async def display_model_details(call: CallbackQuery, state: FSMContext):
     )
 
 
+@router.callback_query(F.data.startswith('confirm_model:'), StateFilter(None))
+async def confirm_model_choice_message(call, CallbackQuery, state: FSMContext):
+    await call.message.delete()
+
+    model_name = call.data.split(':')[-1]
+
+    tgid = call.message.from_user.id
+
+    session = create_session()
+    user = User.return_user_if_exists(tgid=tgid, session=session)
+
+    user.preferred_model = model_name
+    session.commit()
+    session.close()
+
+
+    await call.message.answer(
+        text=LanguageModel.with_context(template=language.model_confirmed_msg, context={"model":model_name}),
+    )
+    
