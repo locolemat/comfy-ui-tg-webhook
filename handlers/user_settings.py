@@ -55,6 +55,7 @@ async def greeting_reply(message: Message, state: FSMContext):
 @router.callback_query(Command('generate'), StateFilter(None))
 @router.callback_query(F.data=="generate", StateFilter(None))
 async def begin_generation(call: CallbackQuery, state: FSMContext):
+    await call.message.delete()
 
     await call.message.answer(
         text=language.generate_begin_msg,
@@ -65,6 +66,7 @@ async def begin_generation(call: CallbackQuery, state: FSMContext):
 @router.callback_query(Command('model'), StateFilter(None))
 @router.callback_query(F.data=="choose_model", StateFilter(None))
 async def choose_model(call: CallbackQuery, state: FSMContext):
+    await call.message.delete()
 
     await call.message.answer(
         text=language.model_choice_desc,
@@ -74,6 +76,8 @@ async def choose_model(call: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data.startswith('model:'), StateFilter(None))
 async def display_model_details(call: CallbackQuery, state: FSMContext):
+    await call.message.delete()
+
     model_name = call.data.split(':')[-1]
 
     description_text = model_description_localisation.get(model_name)
