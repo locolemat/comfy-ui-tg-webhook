@@ -68,7 +68,7 @@ class Server(Base):
     @classmethod
     def find_available_for_video(cls, session):
         print('available for video')
-        server = session.scalar(select(Server).where(Server.busy == 0 and Server.for_video == 1))
+        server = session.scalar(select(Server).where(Server.busy == 0).where(Server.for_video == 1))
         return server
 
     def __repr__(self):
