@@ -36,7 +36,7 @@ greeting_buttons_text = {
 async def unleash_gallery(message: Message, state: FSMContext):
     tgid = message.from_user.id
 
-    upload_directory = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload')
+    upload_directory = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload', 'gallery')
     files_to_send = os.listdir(upload_directory)
 
     with open('file_ids.txt', 'a') as f:
