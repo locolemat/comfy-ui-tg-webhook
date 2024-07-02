@@ -174,7 +174,7 @@ async def from_text_generation(message: Message, state: FSMContext):
     file_type = workflow.file_type
     folder = workflow.folder
     
-    length = data.get("length")
+    length = data.get("length") or 0
 
     session = create_session()
     server = Server.find_available(session)
@@ -256,7 +256,7 @@ async def from_image_generation(message: Message, state: FSMContext):
 
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload')
     photo_id = message.photo[-1].file_id
-    length = data.get("length")
+    length = data.get("length") or 0
 
     id = utils.generate_string(10)
     image_name = f"{id}_up.png"

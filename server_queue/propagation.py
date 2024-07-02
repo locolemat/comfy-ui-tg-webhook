@@ -37,7 +37,7 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
     session = create_session()
     server = session.get(Server, server.id)
 
-    frames = queue_item.length() * 12
+    length = queue_item.length() or 0
 
     await bot.send_message(
         chat_id=queue_item.user_id(),
@@ -49,7 +49,7 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
 
     print('Propagation: make a query')
 
-    await client.prompt_query(prompt=queue_item.prompt(), address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=frames)
+    await client.prompt_query(prompt=queue_item.prompt(), address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12)
 
     start_time = time.time()
 
@@ -86,7 +86,7 @@ async def process_queue_result_image(queue_item: QueueItem, server: Server):
     )
 
     dimensions = utils.get_dimensions(queue_item.dimensions())
-    frames = queue_item.length() * 12
+    length = queue_item.length() or 0
 
     workflow = queue_item.workflow()
     file_type = workflow.file_type
@@ -96,7 +96,7 @@ async def process_queue_result_image(queue_item: QueueItem, server: Server):
     await client.upload_image(address=server.address, image_path=queue_item.prompt())
 
     print('Propagation: make a query')
-    await client.prompt_query(address=server.address, prompt=os.path.basename(queue_item.prompt()), id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=frames)
+    await client.prompt_query(address=server.address, prompt=os.path.basename(queue_item.prompt()), id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length * 12)
 
     start_time = time.time()
     print('Propagation: start polling')
