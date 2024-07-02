@@ -1,11 +1,11 @@
 from aiogram import Router, F
-from aiogram.filters import CommandStart, StateFilter, Command
+from aiogram.filters import StateFilter, Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
 
-from keyboards import generation_keyboard, greeting_keyboard, choose_model_keyboard, confirm_model_keyboard
+from keyboards import generation_keyboard, choose_model_keyboard, confirm_model_keyboard
 
 from model import create_session
 
