@@ -46,6 +46,11 @@ async def unleash_gallery(message: Message, state: FSMContext):
             file_id = uploaded_file.photo[0].file_id
             f.write(f'{file}:{file_id}\n')
 
+@router.message(F.text, Command('test_photo'))
+async def test_photo_send_by_id(message: Message):
+    tgid = message.from_user.id
+    await message.bot.send_photo(chat_id=tgid, photo='AgACAgIAAxkDAAINJWaEIpt5Y3Ez3ZaC02XOydGkgWeHAAJS2zEbiiIgSAKkAjMXjAPIAQADAgADcwADNQQ')
+
 
 
 @router.message(F.text, CommandStart())
