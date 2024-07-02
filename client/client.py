@@ -39,10 +39,13 @@ async def upload_image(image_path, address):
 
 
 async def download(id, address, file_type="png"):
-    await asyncio.sleep(1)
     folder = "photos"
     if file_type != "png":
         folder = "videos"
+        await asyncio.sleep(3)
+    else:
+        await asyncio.sleep(1)
+
     async with aiohttp.ClientSession() as session:
         response = await session.get(f"http://{address}/view?filename={id}_00001{'_'*(file_type == 'png')}.{file_type}&subfolder=&type=output")
         async with aiofiles.open(f'data//{folder}//{id}_new.{file_type}', 'wb') as target:
