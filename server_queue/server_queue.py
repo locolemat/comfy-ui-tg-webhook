@@ -13,8 +13,9 @@ class Server(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     _address: Mapped[str] = mapped_column("address", String(30))
-    _eta_coefficient: Mapped[float] = mapped_column("eta_coefficient", Float)
+    _eta: Mapped[float] = mapped_column("eta", Float)
     _busy: Mapped[bool] = mapped_column("busy", Boolean)
+    _for_video: Mapped[bool] = mapped_column("for_video", Boolean)
 
     
     @hybrid_property
@@ -38,13 +39,23 @@ class Server(Base):
 
 
     @hybrid_property
-    def eta_coefficient(self):
-        return self._eta_coefficient
+    def for_video(self):
+        return self._for_video
     
 
-    @eta_coefficient.setter
-    def eta_coefficient(self, eta_coefficient):
-        self._eta_coefficient = eta_coefficient
+    @for_video.setter
+    def for_video(self, for_video):
+        self._for_video = for_video
+
+
+    @hybrid_property
+    def eta(self):
+        return self._eta
+    
+
+    @eta.setter
+    def eta(self, eta):
+        self._eta = eta
 
     
     @classmethod
@@ -157,7 +168,7 @@ QUEUE = ServerQueue()
 Base.metadata.create_all(engine)
 with Session(engine) as session:
     session.query(Server).delete()
-    SERVER_LIST = [Server(address=address, eta_coefficient=-1.0, busy=False) for address in ADDRESSES]
+    SERVER_LIST = [Server(address=server['address'], eta=-1.0, busy=False, for_video=server['for_video']) for server in ADDRESSES]
     session.add_all(SERVER_LIST)
     session.commit()
 

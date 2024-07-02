@@ -1,4 +1,4 @@
 addresses:
-  - "0.0.0.0:0"
-  - "0.0.0.0:1"
-  - "0.0.0.0:2"
+  - {address: "0.0.0.0:0", for_video: true}
+  - {address: "0.0.0.0:1", for_video: false}
+  - {address: "0.0.0.0:2", for_video: false}
