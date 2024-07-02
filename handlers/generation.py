@@ -43,7 +43,7 @@ async def unleash_gallery(message: Message, state: FSMContext):
         for file in files_to_send:
             photo = FSInputFile(os.path.join(upload_directory, file), filename=f"{file}_new.png", chunk_size = 1024)
             uploaded_file = await message.bot.send_photo(chat_id=tgid, photo=photo)
-            file_id = uploaded_file.photo.file.file_id
+            file_id = uploaded_file.photo[0].file_id
             f.write(f'{file}:{file_id}')
 
 
