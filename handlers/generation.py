@@ -178,7 +178,7 @@ async def from_text_generation(message: Message, state: FSMContext):
 
 
     session = create_session()
-    server = Server.find_available(session) if workflow == WorkflowTextToVideo else Server.find_available_for_video(session)
+    server = Server.find_available(session) if workflow == WorkflowTextToImage else Server.find_available_for_video(session)
     session.close()
 
     if server:
