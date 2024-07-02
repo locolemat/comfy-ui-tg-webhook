@@ -204,9 +204,7 @@ async def from_text_generation(message: Message, state: FSMContext):
 
         session.close()
 
-        print('are we making a commit?')
         session = create_session()
-        print('yes, we are commiting')
         server = session.get(Server, server_id)
         server.busy = True
         session.commit()
