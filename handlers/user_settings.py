@@ -48,6 +48,6 @@ async def greeting_reply(message: Message, state: FSMContext):
 async def begin_generation(call: CallbackQuery, state: FSMContext):
 
     await call.message.answer(
-        text=language.generation_begin_msg,
+        text=language.generate_begin_msg,
         reply_markup=generation_keyboard()
     )
