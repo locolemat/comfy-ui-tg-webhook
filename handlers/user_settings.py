@@ -89,7 +89,7 @@ async def display_model_details(call: CallbackQuery, state: FSMContext):
 
     model_name = call.data.split(':')[-1]
 
-    model_gallery = gallery.mappings.get(model_name_localisation(model_name).lower())
+    model_gallery = gallery.mappings.get(model_name_localisation[model_name].lower())
 
     if model_gallery:
         await call.message.bot.send_media_group(
