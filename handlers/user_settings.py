@@ -94,7 +94,7 @@ async def confirm_model_choice_message(call: CallbackQuery, state: FSMContext):
 
     model_name = call.data.split(':')[-1]
 
-    tgid = call.message.from_user.id
+    tgid = call.message.chat.id
     print(tgid)
 
     session = create_session()
