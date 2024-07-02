@@ -176,8 +176,9 @@ async def from_text_generation(message: Message, state: FSMContext):
     
     length = data.get("length") or 0
 
+
     session = create_session()
-    server = Server.find_available(session)
+    server = Server.find_available(session) if workflow == WorkflowTextToVideo else Server.find_available_for_video(session)
     session.close()
 
     if server:
@@ -265,7 +266,7 @@ async def from_image_generation(message: Message, state: FSMContext):
     
 
     session = create_session()
-    server = Server.find_available(session)
+    server = Server.find_available_for_video(session)
     session.close()
 
     if server:

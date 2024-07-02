@@ -60,9 +60,16 @@ class Server(Base):
     
     @classmethod
     def find_available(cls, session):
+        print('available for text')
         server = session.scalar(select(Server).where(Server.busy == 0))
         return server
+    
 
+    @classmethod
+    def find_available_for_video(cls, session):
+        print('available for video')
+        server = session.scalar(select(Server).where(Server.busy == 0 and Server.for_video == 1))
+        return server
 
     def __repr__(self):
         return f'Server ID{self.id}: {self.address}, currently busy: {self.busy}. ETA Coefficient: {self.eta_coefficient}'
