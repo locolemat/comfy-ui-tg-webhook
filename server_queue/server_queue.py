@@ -104,7 +104,7 @@ class QueueItem:
         if length:
             self._length = length
         else:
-            return self.length
+            return self._length
     
     def user_id(self, user_id: str | None = None) -> str | None:
         if user_id is not None:
