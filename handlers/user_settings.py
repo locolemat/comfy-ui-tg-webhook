@@ -44,7 +44,7 @@ async def greeting_reply(message: Message, state: FSMContext):
 
 
 @router.callback_query(Command('generate'), StateFilter(None))
-@router.callback_query(F.data=="generate_begin", StateFilter(None))
+@router.callback_query(F.data=="generate", StateFilter(None))
 async def begin_generation(call: CallbackQuery, state: FSMContext):
 
     await call.message.answer(
