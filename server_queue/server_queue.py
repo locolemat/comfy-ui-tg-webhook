@@ -92,12 +92,19 @@ class ServerList:
         
 
 class QueueItem:
-    def __init__(self, prompt: str, workflow: Workflow, dimensions: str, user_id: str):
+    def __init__(self, prompt: str, workflow: Workflow, dimensions: str, user_id: str, length: int = None):
         self._prompt = prompt
         self._workflow = workflow
         self._dimensions = dimensions
         self._user_id = user_id
+        self._length = length
 
+
+    def length(self, length: str | None = None) -> str | None:
+        if length:
+            self._length = length
+        else:
+            return self.length
     
     def user_id(self, user_id: str | None = None) -> str | None:
         if user_id is not None:

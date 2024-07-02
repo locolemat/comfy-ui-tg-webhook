@@ -227,16 +227,17 @@ async def from_text_generation(message: Message, state: FSMContext):
         session = create_session()
         server = session.get(Server, server_id)
         server.busy = False
-        session.commit()
-        session.close()
-
+        
         queue_item = QUEUE.advance_queue()
 
         if queue_item:
             await process_queue_result(queue_item=queue_item, server=server)
 
+        session.commit()
+        session.close()
+
     else:
-        queue_item = QueueItem(prompt=message.text, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id)
+        queue_item = QueueItem(prompt=message.text, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id, length=length)
         QUEUE.add_to_queue(queue_item=queue_item)
         position = QUEUE.get_length()
         await message.answer(
@@ -297,15 +298,17 @@ async def from_image_generation(message: Message, state: FSMContext):
         session = create_session()
         server = session.get(Server, server_id)
         server.busy = False
-        session.commit()
-        session.close()
+        
 
         queue_item = QUEUE.advance_queue()
         if queue_item:
             await process_queue_result(queue_item=queue_item, server=server)
 
+        session.commit()
+        session.close()
+
     else:
-        queue_item = QueueItem(prompt=photo_path, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id)
+        queue_item = QueueItem(prompt=photo_path, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id, length=length)
         QUEUE.add_to_queue(queue_item=queue_item)
         position = QUEUE.get_length()
         await message.answer(
