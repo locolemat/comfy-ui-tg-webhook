@@ -3,6 +3,9 @@ photos
 videos
 upload
 main.db
+file_ids.txt
+form_gallery_json.py
+/gallery.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
