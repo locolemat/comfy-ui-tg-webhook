@@ -89,7 +89,7 @@ async def display_model_details(call: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data.startswith('confirm_model:'), StateFilter(None))
-async def confirm_model_choice_message(call, CallbackQuery, state: FSMContext):
+async def confirm_model_choice_message(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
 
     model_name = call.data.split(':')[-1]
