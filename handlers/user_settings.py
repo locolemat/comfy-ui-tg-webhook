@@ -30,7 +30,7 @@ async def greeting_reply(message: Message, state: FSMContext):
 
     session = create_session()
 
-    user = User.return_user_if_exists(tgid=tgid)
+    user = User.return_user_if_exists(tgid=tgid, session=session)
 
     if user is None:
         username = message.from_user.first_name
