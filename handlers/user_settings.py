@@ -97,7 +97,7 @@ async def display_model_details(call: CallbackQuery, state: FSMContext):
     if model_gallery:
         await call.message.bot.send_media_group(
             chat_id=call.message.chat.id,
-            photo = InputMediaPhoto(media=model_gallery.get(model_name)),
+            photo = InputMediaPhoto(media=model_gallery),
             text = description_text,
             reply_markup=confirm_model_keyboard(model_name=model_name)
         )
