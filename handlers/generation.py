@@ -26,11 +26,7 @@ from client import client
 
 router = Router()
 
-greeting_buttons_text = {
-    language.button_generate_text_image.split(':')[-1],
-    language.button_generate_text_video.split(':')[-1],
-    language.button_generate_image_video.split(':')[-1]
-}
+greeting_buttons_text = {'i2v', 't2v', 't2i'}
 
 
 @router.message(F.text, CommandStart())
@@ -59,7 +55,7 @@ async def greeting_reply(message: Message, state: FSMContext):
 
     await message.answer(
         text=LanguageModel.with_emojis(
-                    LanguageModel.with_context(template=language.greeting, 
+                                    LanguageModel.with_context(template=language.greeting, 
                                        context={"username":username,"tokens":balance}
                                        )),
         reply_markup=greeting_keyboard()
@@ -75,11 +71,11 @@ async def text_to_video_dimensions(call: CallbackQuery, state: FSMContext):
         reply_markup=dimensions_keyboard()
     )
 
-    if call.data == language.button_generate_text_video:
+    if call.data == 't2v':
         await state.set_state(states.TextToVideo.choose_dimensions)
-    elif call.data == language.button_generate_text_image:
+    elif call.data == 't2i':
         await state.set_state(states.TextToImage.choose_dimensions)
-    elif call.data == language.button_generate_image_video:
+    elif call.data == 'i2v':
         await state.set_state(states.ImageToVideo.choose_dimensions)
 
     await state.update_data(action=call.data)

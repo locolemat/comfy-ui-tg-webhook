@@ -5,9 +5,9 @@ from configuration.localisation import language, LanguageModel
 def generation_keyboard() -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
-    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.button_generate_text_image), callback_data=language.button_generate_text_image.split(':')[-1]))
-    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.button_generate_text_video), callback_data=language.button_generate_text_video.split(':')[-1]))
-    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.button_generate_image_video), callback_data=language.button_generate_image_video.split(':')[-1]))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.button_generate_text_image), callback_data='t2i'))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.button_generate_text_video), callback_data='t2v'))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.button_generate_image_video), callback_data='i2v'))
 
     builder.adjust(1)
 
