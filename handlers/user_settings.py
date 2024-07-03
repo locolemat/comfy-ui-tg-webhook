@@ -108,6 +108,7 @@ async def confirm_model_choice_message(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
 
     model_name = call.data.split(':')[-1]
+    model_gallery = model_name_localisation[model_name].lower()
 
     tgid = call.message.chat.id
 
@@ -120,6 +121,6 @@ async def confirm_model_choice_message(call: CallbackQuery, state: FSMContext):
 
 
     await call.message.answer(
-        text=LanguageModel.with_context(template=language.model_confirmed_msg, context={"model":model_name}),
+        text=LanguageModel.with_context(template=language.model_confirmed_msg, context={"model":model_gallery}),
     )
     
