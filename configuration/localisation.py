@@ -2,6 +2,7 @@ import jsone
 import json
 import os
 
+from emoji import emojize
 from deep_translator import GoogleTranslator
 
 LANGUAGE_FILES_FOLDER = os.path.join(os.path.dirname(__file__), "lang")
@@ -24,7 +25,7 @@ class LanguageModel:
     
     @classmethod
     def with_context(cls, template: str, context: dict) -> str:
-        return jsone.render(template, context)
+        return emojize(jsone.render(template, context))
 
 
     @classmethod
