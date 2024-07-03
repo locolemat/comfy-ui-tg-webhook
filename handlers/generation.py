@@ -26,7 +26,7 @@ from client import client
 
 router = Router()
 
-greeting_buttons_text = {'i2v', 't2v', 't2i'}
+greeting_buttons_text = {'i2v':language.button_generate_image_video, 't2v': language.button_generate_text_video, 't2i': language.button_generate_text_image}
 
 
 @router.message(F.text, CommandStart())
@@ -62,7 +62,7 @@ async def greeting_reply(message: Message, state: FSMContext):
     )
 
 
-@router.callback_query(F.data.in_(greeting_buttons_text), StateFilter(None))
+@router.callback_query(F.data.in_(greeting_buttons_text.keys()), StateFilter(None))
 async def text_to_video_dimensions(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
 
@@ -78,7 +78,7 @@ async def text_to_video_dimensions(call: CallbackQuery, state: FSMContext):
     elif call.data == 'i2v':
         await state.set_state(states.ImageToVideo.choose_dimensions)
 
-    await state.update_data(action=call.data)
+    await state.update_data(action=greeting_buttons_text.get(call.data))
 
 
 @router.callback_query(states.ImageToVideo.choose_dimensions, F.data.startswith('d'))

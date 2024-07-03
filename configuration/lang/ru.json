@@ -1,8 +1,8 @@
 {
         "greeting": ":raised_hand:Здравствуйте, <b>${username}</b>! Добро пожаловать в <b>AIDA</b> - ИИ для генерации картинок и видео! \nУ Вас ${tokens} токенов. Выберите действие:",
-        "button_generate_text_image": ":camera_with_flash:Сгенерировать картинку из текста",
-        "button_generate_text_video": ":movie_camera:Сгенерировать видео из текста",
-        "button_generate_image_video": ":film_projector:Сгенерировать видео из картинки",
+        "button_generate_text_image": "Сгенерировать картинку из текста",
+        "button_generate_text_video": "Сгенерировать видео из текста",
+        "button_generate_image_video": "Сгенерировать видео из картинки",
         "generate_dimensions": "Пожалуйста, выберите соотношение сторон",
         "options": "Варианты:",
         "dimension_square": "1:1",
