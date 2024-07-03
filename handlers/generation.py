@@ -64,7 +64,7 @@ async def greeting_reply(message: Message, state: FSMContext):
 
 @router.callback_query(F.data.in_(greeting_buttons_text.keys()), StateFilter(None))
 async def text_to_video_dimensions(call: CallbackQuery, state: FSMContext):
-    await call.message.edit(
+    await call.message.edit_message_text(
         text = language.generate_dimensions,
         reply_markup=dimensions_keyboard()
     )
@@ -84,7 +84,7 @@ async def image_to_video_prompt(call: CallbackQuery, state: FSMContext):
     data = call.data.split("_")[-1]
     await state.update_data(dimensions=data)
 
-    await call.message.edit(
+    await call.message.edit_message_text(
         text = language.video_length_prompt
     )
 
@@ -97,7 +97,7 @@ async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
     data = call.data.split("_")[-1]
     await state.update_data(dimensions=data)
     
-    await call.message.edit(
+    await call.message.edit_message_text(
         text = language.prompt_invitation
     )
 
@@ -111,7 +111,7 @@ async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
     data = call.data.split("_")[-1]
     await state.update_data(dimensions=data)
 
-    await call.message.edit(
+    await call.message.edit_message_text(
         text = language.video_length_prompt
     )
 
