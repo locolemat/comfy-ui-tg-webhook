@@ -68,6 +68,8 @@ async def choose_model_command(message: Message, state: FSMContext):
 
 @router.callback_query(F.data=="choose_model", StateFilter(None))
 async def choose_model(call: CallbackQuery, state: FSMContext):
+    await call.message.delete()
+
     tgid = call.message.chat.id
 
     session = create_session()
@@ -75,9 +77,7 @@ async def choose_model(call: CallbackQuery, state: FSMContext):
     model = user.preferred_model
     session.close()
 
-    await call.message.bot.edit_message_text(
-        chat_id=call.message.chat.id,
-        message_id=call.message.message_id,
+    await call.message.answer(
         text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": model_name_localisation.get(model)}),
         reply_markup=choose_model_keyboard()
     )
