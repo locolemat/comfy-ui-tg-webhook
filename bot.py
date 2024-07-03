@@ -1,13 +1,18 @@
 import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
+from aiogram.enums import ParseMode
+from aiogram.client.default import DefaultBotProperties
 
 from token_reader import settings
 from handlers import generation, user_settings
 
 from configuration.localisation import language
 
-bot = Bot(token=settings.bot_token.get_secret_value())
+bot = Bot(token=settings.bot_token.get_secret_value(),
+          default=DefaultBotProperties(
+              parse_mode=ParseMode.HTML
+          ))
 
 async def setup_bot_commands():
     bot_commands = [
