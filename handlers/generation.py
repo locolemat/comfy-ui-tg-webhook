@@ -28,6 +28,20 @@ router = Router()
 
 greeting_buttons_text = {'i2v':language.button_generate_image_video, 't2v': language.button_generate_text_video, 't2i': language.button_generate_text_image}
 
+@router.message(F.text, Command('armageddon'))
+async def unleash_gallery(message: Message, state: FSMContext):
+    tgid = message.from_user.id
+
+    upload_directory = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload', 'gallery')
+    files_to_send = os.listdir(upload_directory)
+
+    with open('file_ids.txt', 'a') as f:
+        for file in files_to_send:
+            photo = FSInputFile(os.path.join(upload_directory, file), filename=f"{file}_new.png", chunk_size = 1024)
+            uploaded_file = await message.bot.send_photo(chat_id=tgid, photo=photo)
+            file_id = uploaded_file.photo[0].file_id
+            f.write(f'{file}:{file_id}')
+
 
 @router.message(F.text, CommandStart())
 async def greeting_reply(message: Message, state: FSMContext):
@@ -88,7 +102,7 @@ async def image_to_video_prompt(call: CallbackQuery, state: FSMContext):
 
     await call.message.bot.edit_message_text(
         message_id=call.message.message_id,
-        chat_id=call.message.from_user.id,
+        chat_id=call.message.chat.id,
         text = language.video_length_prompt
     )
 
@@ -103,7 +117,7 @@ async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
     
     await call.message.bot.edit_message_text(
         message_id=call.message.message_id,
-        chat_id=call.message.from_user.id,
+        chat_id=call.message.chat.id,
         text = language.prompt_invitation
     )
 
@@ -119,7 +133,7 @@ async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
 
     await call.message.bot.edit_message_text(
         message_id=call.message.message_id,
-        chat_id=call.message.from_user.id,
+        chat_id=call.message.chat.id,
         text = language.video_length_prompt
     )
 
