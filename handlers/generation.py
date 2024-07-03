@@ -66,7 +66,7 @@ async def greeting_reply(message: Message, state: FSMContext):
 async def text_to_video_dimensions(call: CallbackQuery, state: FSMContext):
     await call.message.bot.edit_message_text(
         message_id=call.message.message_id,
-        chat_id=call.message.from_user.id,
+        chat_id=call.message.chat.id,
         text = language.generate_dimensions,
         reply_markup=dimensions_keyboard()
     )
