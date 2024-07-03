@@ -27,9 +27,9 @@ from client import client
 router = Router()
 
 greeting_buttons_text = {
-    language.button_generate_text_image,
-    language.button_generate_text_video,
-    language.button_generate_image_video
+    language.button_generate_text_image.split(':')[-1],
+    language.button_generate_text_video.split(':')[-1],
+    language.button_generate_image_video.split(':')[-1]
 }
 
 
