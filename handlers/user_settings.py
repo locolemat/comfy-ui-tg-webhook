@@ -41,9 +41,9 @@ async def begin_generation_command(message: Message, state: FSMContext):
 
 @router.callback_query(F.data=="generate", StateFilter(None))
 async def begin_generation(call: CallbackQuery, state: FSMContext):
-    await call.message.delete()
-
-    await call.message.answer(
+    await call.message.bot.edit_message_text(
+        message_id=call.message.message_id,
+        chat_id=call.message.chat.id,
         text=language.generate_begin_msg,
         reply_markup=generation_keyboard()
     )
@@ -68,8 +68,6 @@ async def choose_model_command(message: Message, state: FSMContext):
 
 @router.callback_query(F.data=="choose_model", StateFilter(None))
 async def choose_model(call: CallbackQuery, state: FSMContext):
-    await call.message.delete()
-
     tgid = call.message.chat.id
 
     session = create_session()
@@ -77,7 +75,9 @@ async def choose_model(call: CallbackQuery, state: FSMContext):
     model = user.preferred_model
     session.close()
 
-    await call.message.answer(
+    await call.message.bot.edit_message_text(
+        chat_id=call.message.chat.id,
+        message_id=call.message.message_id,
         text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": model_name_localisation.get(model)}),
         reply_markup=choose_model_keyboard()
     )
@@ -91,18 +91,16 @@ async def display_model_details(call: CallbackQuery, state: FSMContext):
 
     model_gallery = gallery.mappings.get(model_name_localisation[model_name].lower())
 
+    description_text = model_description_localisation.get(model_name)
+
+    print(f'DEBUG DISPLAY MODEL: {model_name}, {model_gallery}')
     if model_gallery:
         await call.message.bot.send_media_group(
             chat_id=call.message.chat.id,
-            media = [InputMediaPhoto(media=photo_id) for photo_id in model_gallery]
+            photo = InputMediaPhoto(media=model_gallery.get(model_name)),
+            text = description_text,
+            reply_markup=confirm_model_keyboard(model_name=model_name)
         )
-
-    description_text = model_description_localisation.get(model_name)
-
-    await call.message.answer(
-        text = description_text,
-        reply_markup=confirm_model_keyboard(model_name=model_name)
-    )
 
 
 @router.callback_query(F.data.startswith('confirm_model:'), StateFilter(None))
