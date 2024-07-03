@@ -58,7 +58,10 @@ async def greeting_reply(message: Message, state: FSMContext):
     session.close()
 
     await message.answer(
-        text=LanguageModel.with_context(template=language.greeting, context={"username":username,"tokens":balance}),
+        text=LanguageModel.with_emojis(
+                    LanguageModel.with_context(template=language.greeting, 
+                                       context={"username":username,"tokens":balance}
+                                       )),
         reply_markup=greeting_keyboard()
     )
 

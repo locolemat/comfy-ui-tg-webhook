@@ -1,13 +1,13 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram import types
-from configuration.localisation import language
+from configuration.localisation import language, LanguageModel
 
 def generation_keyboard() -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
-    builder.add(types.InlineKeyboardButton(text=language.button_generate_text_image, callback_data=language.button_generate_text_image))
-    builder.add(types.InlineKeyboardButton(text=language.button_generate_text_video, callback_data=language.button_generate_text_video))
-    builder.add(types.InlineKeyboardButton(text=language.button_generate_image_video, callback_data=language.button_generate_image_video))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.button_generate_text_image), callback_data=language.button_generate_text_image))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.button_generate_text_video), callback_data=language.button_generate_text_video))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.button_generate_image_video), callback_data=language.button_generate_image_video))
 
     builder.adjust(1)
 
@@ -29,9 +29,9 @@ def dimensions_keyboard() -> InlineKeyboardBuilder:
 def greeting_keyboard() -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
-    builder.add(types.InlineKeyboardButton(text=language.choose_model, callback_data="choose_model"))
-    builder.add(types.InlineKeyboardButton(text=language.user_payment, callback_data="payment"))
-    builder.add(types.InlineKeyboardButton(text=language.generate_begin, callback_data="generate"))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.choose_model), callback_data="choose_model"))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.user_payment), callback_data="payment"))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.generate_begin), callback_data="generate"))
 
     builder.adjust(1)
     return builder.as_markup()
@@ -54,8 +54,8 @@ def choose_model_keyboard() -> InlineKeyboardBuilder:
 def confirm_model_keyboard(model_name: str) -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
-    builder.add(types.InlineKeyboardButton(text=language.model_confirm, callback_data=f'confirm_model:{model_name}'))
-    builder.add(types.InlineKeyboardButton(text=language.model_reject, callback_data='choose_model'))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.model_confirm), callback_data=f'confirm_model:{model_name}'))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.model_reject), callback_data='choose_model'))
 
     builder.adjust(2)
     return builder.as_markup()

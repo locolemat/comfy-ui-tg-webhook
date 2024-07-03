@@ -25,7 +25,12 @@ class LanguageModel:
     
     @classmethod
     def with_context(cls, template: str, context: dict) -> str:
-        return emojize(jsone.render(template, context))
+        return jsone.render(template, context)
+    
+
+    @classmethod
+    def with_emojis(cls, template: str) -> str:
+        return emojize(template)
 
 
     @classmethod
