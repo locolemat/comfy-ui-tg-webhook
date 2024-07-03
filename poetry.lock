@@ -344,6 +344,23 @@ docx = ["docx2txt (>=0.8,<0.9)"]
 pdf = ["pypdf (>=3.3.0,<4.0.0)"]
 
 [[package]]
+name = "emoji"
+version = "2.12.1"
+description = "Emoji for Python"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "emoji-2.12.1-py3-none-any.whl", hash = "sha256:a00d62173bdadc2510967a381810101624a2f0986145b8da0cffa42e29430235"},
+    {file = "emoji-2.12.1.tar.gz", hash = "sha256:4aa0488817691aa58d83764b6c209f8a27c0b3ab3f89d1b8dceca1a62e4973eb"},
+]
+
+[package.dependencies]
+typing-extensions = ">=4.7.0"
+
+[package.extras]
+dev = ["coverage", "pytest (>=7.4.4)"]
+
+[[package]]
 name = "frozenlist"
 version = "1.4.1"
 description = "A list-like structure which implements collections.abc.MutableSequence"
@@ -1094,4 +1111,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "28a8f0e0deaa43e2aefb35479d50aadb14e39827ff502de916a843be4e70e079"
+content-hash = "90ed823cf6f59a0c4ed97dcb1e8506eb4ec417b365acf8a4a686bbc81736ea0b"

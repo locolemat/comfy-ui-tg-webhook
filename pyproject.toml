@@ -13,6 +13,7 @@ pydantic-settings = "^2.3.2"
 json-e = "^4.7.0"
 sqlalchemy = "^2.0.31"
 deep-translator = "^1.11.4"
+emoji = "^2.12.1"
 
 
 [build-system]
