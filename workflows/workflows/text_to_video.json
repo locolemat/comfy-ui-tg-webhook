@@ -186,7 +186,7 @@
     },
     "44": {
       "inputs": {
-        "text": "text, watermark",
+        "text": "text, watermark, ${negative_prompt}",
         "clip": [
           "41",
           1
