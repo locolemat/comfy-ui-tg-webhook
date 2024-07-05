@@ -182,12 +182,39 @@ async def choose_length_i2v(message: Message, state: FSMContext):
     await state.set_state(states.ImageToVideo.choose_prompt)
 
 
-@router.message(F.text, states.TextToImage.choose_prompt)        
+@router.message(F.text, states.TextToImage.choose_prompt)
+async def t2i_negative_prompt(message: Message, state: FSMContext):
+    prompt = message.text
+    await state.update_data(prompt = prompt)
+
+    await message.answer(
+        text = language.negative_prompt_invitation
+    )
+
+    await state.set_state(states.TextToImage.choose_negative_prompt)
+
+
 @router.message(F.text, states.TextToVideo.choose_prompt)
+async def t2v_negative_prompt(message: Message, state: FSMContext):
+    prompt = message.text
+    await state.update_data(prompt = prompt)
+
+    await message.answer(
+        text = language.negative_prompt_invitation
+    )
+
+    await state.set_state(states.TextToVideo.choose_negative_prompt)
+
+
+@router.message(F.text, states.TextToImage.choose_negative_prompt)        
+@router.message(F.text, states.TextToVideo.choose_negative_prompt)
 async def from_text_generation(message: Message, state: FSMContext):
     data = await state.get_data()
     print(data)
     workflow = data["workflow"]
+    prompt = data["prompt"]
+    negative_prompt = message.text
+
     file_type = workflow.file_type
     folder = workflow.folder
     
@@ -216,7 +243,7 @@ async def from_text_generation(message: Message, state: FSMContext):
             text = LanguageModel.with_context(template=language.pre_generation_message,
                                             context={"action": data["action"],
                                                     "dimensions": data["dimensions"],
-                                                    "prompt": message.text})
+                                                    "prompt": prompt})
         )
 
         dimensions = utils.get_dimensions(data["dimensions"])
@@ -228,7 +255,7 @@ async def from_text_generation(message: Message, state: FSMContext):
         id = utils.generate_string(10)
         print(f"Query ID: {id}")
 
-        await client.prompt_query(prompt=LanguageModel.translate_to_english(message.text), address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12, model=model)
+        await client.prompt_query(prompt=LanguageModel.translate_to_english(prompt), negative_prompt=negative_prompt, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12, model=model)
 
         start_time = time.time()
         await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
@@ -260,7 +287,7 @@ async def from_text_generation(message: Message, state: FSMContext):
         session.close()
 
     else:
-        queue_item = QueueItem(prompt=message.text, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id, length=length)
+        queue_item = QueueItem(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id, length=length)
         QUEUE.add_to_queue(queue_item=queue_item)
         position = QUEUE.get_length()
         await message.answer(

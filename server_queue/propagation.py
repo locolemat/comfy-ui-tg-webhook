@@ -54,7 +54,7 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
 
     print('Propagation: make a query')
 
-    await client.prompt_query(prompt=LanguageModel.translate_to_english(queue_item.prompt()), address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12, model=model)
+    await client.prompt_query(prompt=LanguageModel.translate_to_english(queue_item.prompt()), negative_prompt=queue_item.negative_prompt(), address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12, model=model)
 
     start_time = time.time()
 

@@ -1,6 +1,6 @@
 from aiogram import Router, F
 from aiogram.filters import StateFilter, Command
-from aiogram.types import Message, CallbackQuery, InputMediaPhoto
+from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language

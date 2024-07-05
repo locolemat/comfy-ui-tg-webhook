@@ -110,12 +110,20 @@ class ServerList:
         
 
 class QueueItem:
-    def __init__(self, prompt: str, workflow: Workflow, dimensions: str, user_id: str, length: int = None):
+    def __init__(self, prompt: str, workflow: Workflow, dimensions: str, user_id: str, length: int = None, negative_prompt: str = ""):
         self._prompt = prompt
         self._workflow = workflow
         self._dimensions = dimensions
         self._user_id = user_id
         self._length = length
+        self._negative_prompt = negative_prompt
+
+
+    def negative_prompt(self, negative_prompt: str | None = None) -> str | None:
+        if negative_prompt:
+            self._negative_prompt = negative_prompt
+        else:
+            return self._negative_prompt
 
 
     def length(self, length: str | None = None) -> str | None:
