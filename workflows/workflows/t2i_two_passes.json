@@ -1,176 +1,190 @@
 {
 "prompt":{
-  "3": {
-    "inputs": {
-      "seed": "${seed}",
-      "steps": 25,
-      "cfg": 8.0,
-      "sampler_name": "dpmpp_2m",
-      "scheduler": "karras",
-      "denoise": 1,
-      "model": [
-        "4",
-        0
-      ],
-      "positive": [
-        "6",
-        0
-      ],
-      "negative": [
-        "7",
-        0
-      ],
-      "latent_image": [
-        "5",
-        0
-      ]
+    "3": {
+      "inputs": {
+        "seed": "${seed}",
+        "steps": 25,
+        "cfg": 8,
+        "sampler_name": "dpmpp_2m",
+        "scheduler": "karras",
+        "denoise": 1,
+        "model": [
+          "4",
+          0
+        ],
+        "positive": [
+          "6",
+          0
+        ],
+        "negative": [
+          "7",
+          0
+        ],
+        "latent_image": [
+          "5",
+          0
+        ]
+      },
+      "class_type": "KSampler",
+      "_meta": {
+        "title": "KSampler"
+      }
     },
-    "class_type": "KSampler",
-    "_meta": {
-      "title": "KSampler"
-    }
-  },
-  "4": {
-    "inputs": {
-      "ckpt_name": "${model}"
+    "4": {
+      "inputs": {
+        "ckpt_name": "${model}"
+      },
+      "class_type": "CheckpointLoaderSimple",
+      "_meta": {
+        "title": "Load Checkpoint"
+      }
     },
-    "class_type": "CheckpointLoaderSimple",
-    "_meta": {
-      "title": "Load Checkpoint"
-    }
-  },
-  "5": {
-    "inputs": {
-      "width": "${width}",
-      "height": "${height}",
-      "batch_size": 1
+    "5": {
+      "inputs": {
+        "width": "${width}",
+        "height": "${height}",
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage",
+      "_meta": {
+        "title": "Empty Latent Image"
+      }
     },
-    "class_type": "EmptyLatentImage",
-    "_meta": {
-      "title": "Empty Latent Image"
-    }
-  },
-  "6": {
-    "inputs": {
-      "text": "${prompt}",
-      "clip": [
-        "4",
-        1
-      ]
+    "6": {
+      "inputs": {
+        "text": "${prompt}",
+        "clip": [
+          "4",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Positive)"
+      }
     },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP Text Encode (Positive)"
-    }
-  },
-  "7": {
-    "inputs": {
-      "text": "ugly, deformed, text, watermark, ${negative_prompt}",
-      "clip": [
-        "4",
-        1
-      ]
+    "7": {
+      "inputs": {
+        "text": "text, watermark, ugly, deformed, {negative_prompt}",
+        "clip": [
+          "4",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Negative)"
+      }
     },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP Text Encode (Negative)"
-    }
-  },
-  "8": {
-    "inputs": {
-      "samples": [
-        "25",
-        0
-      ],
-      "vae": [
-        "15",
-        0
-      ]
+    "8": {
+      "inputs": {
+        "samples": [
+          "25",
+          0
+        ],
+        "vae": [
+          "15",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode"
+      }
     },
-    "class_type": "VAEDecode",
-    "_meta": {
-      "title": "VAE Decode"
-    }
-  },
-  "15": {
-    "inputs": {
-      "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
+    "15": {
+      "inputs": {
+        "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
+      },
+      "class_type": "VAELoader",
+      "_meta": {
+        "title": "Load VAE"
+      }
     },
-    "class_type": "VAELoader",
-    "_meta": {
-      "title": "Load VAE"
-    }
-  },
-  "25": {
-    "inputs": {
-      "seed": "${seed_2}",
-      "steps": 20,
-      "cfg": 8.0,
-      "sampler_name": "dpmpp_2m",
-      "scheduler": "karras",
-      "denoise": 0.6,
-      "model": [
-        "4",
-        0
-      ],
-      "positive": [
-        "6",
-        0
-      ],
-      "negative": [
-        "7",
-        0
-      ],
-      "latent_image": [
-        "3",
-        0
-      ]
+    "25": {
+      "inputs": {
+        "seed": "${seed_2}",
+        "steps": 20,
+        "cfg": 8,
+        "sampler_name": "dpmpp_2m",
+        "scheduler": "karras",
+        "denoise": 0.6,
+        "model": [
+          "4",
+          0
+        ],
+        "positive": [
+          "6",
+          0
+        ],
+        "negative": [
+          "7",
+          0
+        ],
+        "latent_image": [
+          "29",
+          0
+        ]
+      },
+      "class_type": "KSampler",
+      "_meta": {
+        "title": "KSampler"
+      }
     },
-    "class_type": "KSampler",
-    "_meta": {
-      "title": "KSampler"
-    }
-  },
-  "26": {
-    "inputs": {
-      "samples": [
-        "3",
-        0
-      ],
-      "vae": [
-        "15",
-        0
-      ]
+    "26": {
+      "inputs": {
+        "samples": [
+          "3",
+          0
+        ],
+        "vae": [
+          "15",
+          0
+        ]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode"
+      }
     },
-    "class_type": "VAEDecode",
-    "_meta": {
-      "title": "VAE Decode"
-    }
-  },
-  "27": {
-    "inputs": {
-      "images": [
-        "26",
-        0
-      ]
+    "27": {
+      "inputs": {
+        "images": [
+          "26",
+          0
+        ]
+      },
+      "class_type": "PreviewImage",
+      "_meta": {
+        "title": "Preview Image"
+      }
     },
-    "class_type": "PreviewImage",
-    "_meta": {
-      "title": "Preview Image"
-    }
-  },
-  "28": {
-    "inputs": {
-      "filename_prefix": "${id}",
-      "images": [
-        "8",
-        0
-      ]
+    "28": {
+      "inputs": {
+        "filename_prefix": "${id}",
+        "images": [
+          "8",
+          0
+        ]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image"
+      }
     },
-    "class_type": "SaveImage",
-    "_meta": {
-      "title": "Save Image"
+    "29": {
+      "inputs": {
+        "upscale_method": "nearest-exact",
+        "scale_by": 1.5,
+        "samples": [
+          "3",
+          0
+        ]
+      },
+      "class_type": "LatentUpscaleBy",
+      "_meta": {
+        "title": "Upscale Latent By"
+      }
     }
   }
-}
 }

@@ -19,7 +19,7 @@ model_name_localisation = {
     "dreamshaper_8.safetensors": language.model_dreamshaper,
     "epicrealism_naturalSinRC1VAE.safetensors": language.model_epicrealism,
     "photon_v1.safetensors": language.model_photon,
-    "realvisxlV40_v40LightningBakedvae.safetensors": language.model_realvisxl
+    "realisticVisionV60B1_v51HyperVAE.safetensors": language.model_realisticvision
 }
 
 model_description_localisation = {
@@ -27,7 +27,7 @@ model_description_localisation = {
     "dreamshaper_8.safetensors": language.model_dreamshaper_desc,
     "epicrealism_naturalSinRC1VAE.safetensors": language.model_epicrealism_desc,
     "photon_v1.safetensors": language.model_photon_desc,
-    "realvisxlV40_v40LightningBakedvae.safetensors": language.model_realvisxl_desc
+    "realisticVisionV60B1_v51HyperVAE.safetensors": language.model_realisticvision_desc
 }
 
 @router.message(Command('generate'), StateFilter(None))
