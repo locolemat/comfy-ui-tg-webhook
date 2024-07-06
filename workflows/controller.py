@@ -30,7 +30,7 @@ class WorkflowTextToImage(Workflow):
     requires_image_upload = False
     
     def __init__(self):
-        self.load_workflow('text_to_image.json')
+        self.load_workflow('t2i_two_passes.json')
         
 
 class WorkflowImageToVideo(Workflow):
