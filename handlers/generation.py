@@ -229,6 +229,7 @@ async def from_text_generation(message: Message, state: FSMContext):
     session = create_session()
     user = User.return_user_if_exists(tgid=message.chat.id, session=session)
     model = user.preferred_model
+    video_model = user.preferred_video_model
     session.close()
 
     if server:
@@ -256,7 +257,7 @@ async def from_text_generation(message: Message, state: FSMContext):
         id = utils.generate_string(10)
         print(f"Query ID: {id}")
 
-        await client.prompt_query(prompt=LanguageModel.translate_to_english(prompt), negative_prompt=negative_prompt, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12, model=model)
+        await client.prompt_query(prompt=LanguageModel.translate_to_english(prompt), negative_prompt=negative_prompt, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12, model=model, video_model=video_model)
 
         start_time = time.time()
         await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)

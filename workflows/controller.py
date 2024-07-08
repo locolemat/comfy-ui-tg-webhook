@@ -21,7 +21,7 @@ class WorkflowTextToVideo(Workflow):
     requires_image_upload = False
 
     def __init__(self):
-        self.load_workflow('text_to_video.json')
+        self.load_workflow('format_check.json')
         
 
 class WorkflowTextToImage(Workflow):

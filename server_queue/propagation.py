@@ -41,6 +41,7 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
     user = User.return_user_if_exists(session=session, tgid=queue_item.user_id())
 
     model = user.preferred_model
+    video_model = user.preferred_video_model
 
     length = queue_item.length() or 0
 
@@ -54,7 +55,7 @@ async def process_queue_result_text(queue_item: QueueItem, server: Server):
 
     print('Propagation: make a query')
 
-    await client.prompt_query(prompt=LanguageModel.translate_to_english(queue_item.prompt()), negative_prompt=queue_item.negative_prompt(), address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12, model=model)
+    await client.prompt_query(prompt=LanguageModel.translate_to_english(queue_item.prompt()), negative_prompt=queue_item.negative_prompt(), address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12, model=model, video_model=video_model)
 
     start_time = time.time()
 

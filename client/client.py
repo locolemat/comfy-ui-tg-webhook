@@ -8,11 +8,11 @@ from random import randint
 import json
 
 
-async def prompt_query(prompt, address, id, width, height, workflow, model=None, frames=None, negative_prompt=""):
+async def prompt_query(prompt, address, id, width, height, workflow, model=None, frames=None, negative_prompt="", video_model=None):
 
     async with aiohttp.ClientSession() as session:
         response = await session.post(f"http://{address}/prompt", 
-                                      json=workflow.get_workflow(prompt=prompt, id=id, negative_prompt=negative_prompt, width=width, height=height, frames=frames, model=model, seed=randint(1, 1_000_000_000), seed_2=randint(1, 1_000_000_000)))
+                                      json=workflow.get_workflow(prompt=prompt, id=id, negative_prompt=negative_prompt, width=width, height=height, frames=frames, model=model, video_model=video_model, seed=randint(1, 1_000_000_000), seed_2=randint(1, 1_000_000_000)))
         print("Запрос сгенерирован", response.status)
         response.close()
 
