@@ -204,6 +204,9 @@
       "loop_count": 0,
       "filename_prefix": "${id}",
       "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 20,
+      "save_metadata": true,
       "pingpong": false,
       "save_output": true,
       "images": [
