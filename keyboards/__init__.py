@@ -1,1 +1,1 @@
-from .keyboards import generation_keyboard, greeting_keyboard, dimensions_keyboard, choose_model_keyboard, confirm_model_keyboard
+from .keyboards import generation_keyboard, greeting_keyboard, dimensions_keyboard, choose_model_keyboard, confirm_model_keyboard, choose_video_model_keyboard, confirm_video_model_keyboard

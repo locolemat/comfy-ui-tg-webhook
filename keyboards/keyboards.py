@@ -30,6 +30,7 @@ def greeting_keyboard() -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
     builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.choose_model), callback_data="choose_model"))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.choose_video_model), callback_data="choose_video_model"))
     builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.user_payment), callback_data="payment"))
     builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.generate_begin), callback_data="generate"))
 
@@ -68,6 +69,16 @@ def confirm_model_keyboard(model_name: str) -> InlineKeyboardBuilder:
 
     builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.model_confirm), callback_data=f'confirm_model:{model_name}'))
     builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.model_reject), callback_data='choose_model'))
+
+    builder.adjust(2)
+    return builder.as_markup()
+
+
+def confirm_video_model_keyboard(model_name: str) -> InlineKeyboardBuilder:
+    builder = InlineKeyboardBuilder()
+
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.model_confirm), callback_data=f'confirm_v_model:{model_name}'))
+    builder.add(types.InlineKeyboardButton(text=LanguageModel.with_emojis(language.model_reject), callback_data='choose_video_model'))
 
     builder.adjust(2)
     return builder.as_markup()
