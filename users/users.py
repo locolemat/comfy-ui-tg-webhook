@@ -12,11 +12,21 @@ class User(Base):
     _username: Mapped[str] = mapped_column("username", String)
     _balance: Mapped[int] = mapped_column("balance", Integer)
     _preferred_model: Mapped[str] = mapped_column("preferred_model", String)
+    _preferred_video_model: Mapped[str] = mapped_column("preferred_video_model", String)
 
 
     @classmethod
     def return_user_if_exists(cls, tgid: str, session):
         return session.scalar(select(User).where(User.tgid == tgid))
+
+    @hybrid_property
+    def preferred_video_model(self):
+        return self._preferred_video_model
+    
+    
+    @preferred_video_model.setter
+    def preferred_video_model(self, preferred_video_model):
+        self._preferred_video_model = preferred_video_model
 
 
     @hybrid_property

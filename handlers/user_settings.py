@@ -32,6 +32,17 @@ model_description_localisation = {
     "turbovisionxlSuperFastXL.safetensors": language.model_turbovisionxl_desc
 }
 
+video_model_name_localisation = {
+    "SVD/svd.safetensors": language.v_model_svd,
+    "SVD/svd_xt.safetensors": language.v_model_svd_xt
+}
+
+video_model_description_localisation = {
+    "SVD/svd.safetensors": language.v_model_svd_desc,
+    "SVD/svd_xt.safetensors": language.v_model_svd_xt_desc
+}
+
+
 @router.message(Command('generate'), StateFilter(None))
 async def begin_generation_command(message: Message, state: FSMContext):
     await message.delete()

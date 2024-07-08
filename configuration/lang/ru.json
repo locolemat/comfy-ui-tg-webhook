@@ -40,5 +40,9 @@
         "model_confirmed_msg": "Вы установили модель ${model}.\nВы всегда можете вернуться к списку моделей и поменять свой выбор.",
         "start_command_desc": "Открыть главное меню бота",
         "model_command_desc": "Открыть выбор моделей",
-        "generate_command_desc": "Начать генерацию"
+        "generate_command_desc": "Начать генерацию",
+        "v_model_svd": "SVD",
+        "v_model_svd_xt": "<b>Stable Video Diffusion.</b>\nСтандартная модель для генерации видео.",
+        "v_model_svd_desc": "SVD XT",
+        "v_model_svd_xt_desc": "<b>Stable Video Diffusion Extended</b>\nВыдает заметно лучшие результаты по сравнению с обычной SVD, но выполнение занимает немного больше времени."
 }

@@ -52,6 +52,17 @@ def choose_model_keyboard() -> InlineKeyboardBuilder:
     return builder.as_markup()
 
 
+def choose_video_model_keyboard() -> InlineKeyboardBuilder:
+    builder = InlineKeyboardBuilder()
+
+    builder.add(types.InlineKeyboardButton(text=language.model_anithing, callback_data="v_model:SVD/svd.safetensors"))
+    builder.add(types.InlineKeyboardButton(text=language.model_dreamshaper, callback_data="v_model:SVD/svd_xt.safetensors"))
+    
+
+    builder.adjust(2)
+    return builder.as_markup()
+
+
 def confirm_model_keyboard(model_name: str) -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
