@@ -20,7 +20,7 @@ model_name_localisation = {
     "epicrealism_naturalSinRC1VAE.safetensors": language.model_epicrealism,
     "photon_v1.safetensors": language.model_photon,
     "realisticVisionV60B1_v51HyperVAE.safetensors": language.model_realisticvision,
-    "turbovisionxlSuperFastXLBasedOnNew_tvxlV431Bakedvae.safetensors": language.model_turbovisionxl
+    "turbovisionxlSuperFastXL.safetensors": language.model_turbovisionxl
 }
 
 model_description_localisation = {
@@ -29,7 +29,7 @@ model_description_localisation = {
     "epicrealism_naturalSinRC1VAE.safetensors": language.model_epicrealism_desc,
     "photon_v1.safetensors": language.model_photon_desc,
     "realisticVisionV60B1_v51HyperVAE.safetensors": language.model_realisticvision_desc,
-    "turbovisionxlSuperFastXLBasedOnNew_tvxlV431Bakedvae.safetensors": language.model_turbovisionxl_desc
+    "turbovisionxlSuperFastXL.safetensors": language.model_turbovisionxl_desc
 }
 
 @router.message(Command('generate'), StateFilter(None))

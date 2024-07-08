@@ -45,7 +45,7 @@ def choose_model_keyboard() -> InlineKeyboardBuilder:
     builder.add(types.InlineKeyboardButton(text=language.model_epicrealism, callback_data="model:epicrealism_naturalSinRC1VAE.safetensors"))
     builder.add(types.InlineKeyboardButton(text=language.model_photon, callback_data="model:photon_v1.safetensors"))
     builder.add(types.InlineKeyboardButton(text=language.model_realisticvision, callback_data="model:realisticVisionV60B1_v51HyperVAE.safetensors"))
-    builder.add(types.InlineKeyboardButton(text=language.model_turbovisionxl, callback_data="model:turbovisionxlSuperFastXLBasedOnNew_tvxlV431Bakedvae.safetensors"))
+    builder.add(types.InlineKeyboardButton(text=language.model_turbovisionxl, callback_data="model:turbovisionxlSuperFastXL.safetensors"))
 
 
     builder.adjust(3)
