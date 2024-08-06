@@ -121,9 +121,9 @@ class Queue(Base):
 
 
     @classmethod
-    def add_new_queue_item(cls, prompt, negative_prompt, workflow, dimensions, user_id):
+    def add_new_queue_item(cls, prompt, negative_prompt, workflow, dimensions, user_id, upload_image_name):
         with Session(queue_engine) as session:
-            queue_item = Queue(prompt=prompt, negative_prompt=prompt, workflow=workflow, dimensions=dimensions, user_id=user_id)
+            queue_item = Queue(prompt=prompt, negative_prompt=prompt, workflow=workflow, dimensions=dimensions, user_id=user_id, upload_image_name=upload_image_name)
             session.add(queue_item)
             session.commit()
 
@@ -207,7 +207,7 @@ class Queue(Base):
     @upload_image_name.setter
     def upload_image_name(self, upload_image_name):
         self._upload_image_name = upload_image_name
-        
+
 
 Base.metadata.create_all(queue_engine)
 with Session(queue_engine) as session:
