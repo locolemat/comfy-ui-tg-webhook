@@ -8,8 +8,6 @@ from token_reader import settings
 from handlers import generation, user_settings
 
 from configuration.localisation import language
-from server_queue.server_queue import Server
-from model import create_session
 
 bot = Bot(token=settings.bot_token.get_secret_value(),
           default=DefaultBotProperties(
@@ -26,10 +24,6 @@ async def setup_bot_commands():
     await bot.set_my_commands(bot_commands)
 
 async def main():
-    session = create_session()
-    for server in Server.find_available_for_text(session):
-        print(server.address)
-    session.close()
     dp = Dispatcher()
     dp.include_router(generation.router)
     dp.include_router(user_settings.router)

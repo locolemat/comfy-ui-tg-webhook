@@ -68,7 +68,7 @@ class Server(Base):
     @classmethod
     def find_available_for_video(cls, session):
         print('available for video')
-        server = session.scalar(select(Server).where(Server.busy == 0).where(Server.for_video == 1))
+        server = session.scalars(select(Server).where(Server.busy == 0).where(Server.for_video == 1))
         return server
 
     def __repr__(self):
@@ -118,7 +118,7 @@ class Queue(Base):
     _dimensions: Mapped[str] = mapped_column("dimensions", String)
     _user_id: Mapped[str] = mapped_column("user_id", String)
     _upload_image_name: Mapped[str] = mapped_column("upload_image_name", String)
-
+    _server_address: Mapped[str] = mapped_column("server_address", String)
 
     @classmethod
     def add_new_queue_item(cls, prompt, negative_prompt, workflow, dimensions, user_id, upload_image_name):
@@ -213,6 +213,16 @@ class Queue(Base):
     @upload_image_name.setter
     def upload_image_name(self, upload_image_name):
         self._upload_image_name = upload_image_name
+
+    
+    @hybrid_property
+    def server_address(self):
+        return self._server_address
+    
+
+    @server_address.setter
+    def server_address(self, server_address):
+        self._server_address = server_address
 
 
 Base.metadata.create_all(queue_engine)
