@@ -5,7 +5,7 @@ from sqlalchemy import String, ForeignKey, Float, Boolean, select, delete
 from sqlalchemy.orm import Mapped, mapped_column, Session
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from model import Base, engine
+from model import Base, engine, queue_engine
 
 
 class Server(Base):
@@ -180,8 +180,8 @@ class ServerQueue:
 
 QUEUE = ServerQueue()
 
-Base.metadata.create_all(engine)
-with Session(engine) as session:
+Base.metadata.create_all(queue_engine)
+with Session(queue_engine) as session:
     session.query(Server).delete()
     SERVER_LIST = [Server(address=server['address'], eta=-1.0, busy=False, for_video=server['for_video']) for server in ADDRESSES]
     session.add_all(SERVER_LIST)
