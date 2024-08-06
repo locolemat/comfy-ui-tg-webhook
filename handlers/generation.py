@@ -57,7 +57,7 @@ async def greeting_reply(message: Message, state: FSMContext):
         username = message.from_user.first_name
         balance = 10
         preferred_model = "anithing_v11Pruned.safetensors"
-        preferred_video_model = "SVD/svd.safetensors"
+        preferred_video_model = "SVD/svd_xt.safetensors"
         user = User(username=username, tgid=tgid, balance=balance, preferred_model=preferred_model, preferred_video_model=preferred_video_model)
         session.add(user)
         session.commit()
