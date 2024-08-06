@@ -46,7 +46,7 @@ class Queue(Base):
     @classmethod
     def get_server_queue(cls, address):
         with Session(queue_engine) as session:
-            return session.scalars(select(Queue).where(Queue.server_address == address))
+            return list(session.scalars(select(Queue).where(Queue.server_address == address)))
         
 
     @classmethod
