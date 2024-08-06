@@ -35,4 +35,4 @@ svd_xt = VideoModel(name="SVD/svd_xt.safetensors", name_text=language.v_model_sv
 svd_xt_1 = VideoModel(name="SVD/svd_xt_1_1.safetensors", name_text=language.v_model_svd_xt_1_1, desc_text=language.v_model_svd_xt_1_1)
 
 image_models = {model_anithing.name: model_anithing, model_dreamshaper.name: model_dreamshaper, model_epicrealism.name: model_epicrealism, model_photon.name: model_photon, model_realisticvision.name: model_realisticvision}
-video_models = {svd.name: svd, svd_xt.name: svd_xt}
+video_models = {svd.name: svd, svd_xt.name: svd_xt, svd_xt_1.name: svd_xt_1}
