@@ -95,8 +95,6 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow):
     else:
         await queue_work(queue_item.id + 1)
 
-    
-
 
 async def process_queue_result_image(queue_item: Queue, workflow: Workflow):
     print("BEGAN PROPAGATING EVENT")

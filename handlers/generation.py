@@ -224,9 +224,9 @@ async def from_text_generation(message: Message, state: FSMContext):
 
     session = create_session()
     if workflow == WorkflowTextToImage:
-        server_address = choice(Server.find_available_for_text(session)).address
+        server_address = choice(list(Server.find_available_for_text(session))).address
     else:
-        server_address = choice(Server.find_available_for_video(session)).address
+        server_address = choice(list(Server.find_available_for_video(session))).address
     session.close()
 
     Queue.add_new_queue_item(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=dimensions, user_id=message.chat.id, upload_image_name="", server_address=server_address)
