@@ -25,6 +25,8 @@ async def setup_bot_commands():
     await bot.set_my_commands(bot_commands)
 
 async def main():
+    Queue.delete_queue_item(1)
+    
     dp = Dispatcher()
     dp.include_router(generation.router)
     dp.include_router(user_settings.router)
