@@ -27,6 +27,7 @@ async def setup_bot_commands():
 async def main():
     Queue.add_new_queue_item(prompt="a", negative_prompt="a", dimensions="a", workflow="a", user_id="a", upload_image_name="a")
     Queue.add_new_queue_item(prompt="a", negative_prompt="a", dimensions="a", workflow="a", user_id="a", upload_image_name="a")
+    Queue.delete_queue_item(1)
     dp = Dispatcher()
     dp.include_router(generation.router)
     dp.include_router(user_settings.router)
