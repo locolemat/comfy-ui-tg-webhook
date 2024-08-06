@@ -5,7 +5,7 @@ from bot import bot
 
 from model import create_session_queue
 
-from server_queue import Queue, Server
+from server_queue import Queue
 from configuration.localisation import LanguageModel, language
 from users import User
 
@@ -45,7 +45,6 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow, serve
     dimensions = utils.get_dimensions(queue_item.dimensions)
 
     session = create_session_queue()
-    server = session.get(Server, server.id)
     user = User.return_user_if_exists(session=session, tgid=queue_item.user_id)
 
     model = user.preferred_model
@@ -87,7 +86,6 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow, serve
 async def process_queue_result_image(queue_item: Queue, workflow: Workflow, server):
     print("BEGAN PROPAGATING EVENT")
     session = create_session_queue()
-    server = session.get(Server, server.id)
 
     await bot.send_message(
         chat_id=queue_item.user_id,
