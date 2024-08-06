@@ -114,5 +114,3 @@ with Session(queue_engine) as session:
     SERVER_LIST = [Server(address=server['address'], eta=-1.0, busy=False, for_video=server['for_video']) for server in ADDRESSES]
     session.add_all(SERVER_LIST)
     session.commit()
-    NUMBER_OF_VIDEO_SERVERS = len(Server.find_available_for_video(session))
-    NUMBER_OF_IMAGE_SERVERS = len(Server.find_available_for_images(session))
