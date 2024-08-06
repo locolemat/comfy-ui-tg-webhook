@@ -24,6 +24,13 @@ from utils import utils
 from client import client
 
 async def servers_start_polling():
+    print("If my theory is correct, I will never start. NEVER")
+    print("If my theory is correct, I will never start. NEVER")
+    print("If my theory is correct, I will never start. NEVER")
+    print("If my theory is correct, I will never start. NEVER")
+    print("If my theory is correct, I will never start. NEVER")
+    print("If my theory is correct, I will never start. NEVER")
+    print("If my theory is correct, I will never start. NEVER")
     servers = Server.get_all_servers()
     tasks = [server.server_polling() for server in servers]
     await asyncio.gather(*tasks)
