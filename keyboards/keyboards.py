@@ -42,7 +42,7 @@ def greeting_keyboard() -> InlineKeyboardBuilder:
 def choose_model_keyboard() -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
-    for model in image_models:
+    for model in image_models.values():
         builder.add(types.InlineKeyboardButton(text=model.name_text, callback_data=model.get_button_callback()))
     # builder.add(types.InlineKeyboardButton(text=language.model_turbovisionxl, callback_data="model:turbovisionxlSuperFastXL.safetensors"))
 
@@ -53,9 +53,9 @@ def choose_model_keyboard() -> InlineKeyboardBuilder:
 def choose_video_model_keyboard() -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
-    for model in video_models:
+    for model in video_models.values():
         builder.add(types.InlineKeyboardButton(text=model.name_text, callback_data=model.get_button_callback()))
-        
+
     builder.adjust(2)
     return builder.as_markup()
 

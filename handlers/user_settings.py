@@ -5,6 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
 from configuration.gallery import gallery
+from configuration.gen_models import image_models, video_models
 
 from keyboards import (generation_keyboard, 
                        choose_model_keyboard, 
@@ -18,15 +19,6 @@ from users import User
 
 router = Router()
 
-model_name_localisation = {
-    "anithing_v11Pruned.safetensors": language.model_anithing,
-    "dreamshaper_8.safetensors": language.model_dreamshaper,
-    "epicrealism_naturalSinRC1VAE.safetensors": language.model_epicrealism,
-    "photon_v1.safetensors": language.model_photon,
-    "realisticVisionV60B1_v51HyperVAE.safetensors": language.model_realisticvision,
-    "turbovisionxlSuperFastXL.safetensors": language.model_turbovisionxl
-}
-
 model_description_localisation = {
     "anithing_v11Pruned.safetensors": language.model_anithing_desc,
     "dreamshaper_8.safetensors": language.model_dreamshaper_desc,
@@ -34,11 +26,6 @@ model_description_localisation = {
     "photon_v1.safetensors": language.model_photon_desc,
     "realisticVisionV60B1_v51HyperVAE.safetensors": language.model_realisticvision_desc,
     "turbovisionxlSuperFastXL.safetensors": language.model_turbovisionxl_desc
-}
-
-video_model_name_localisation = {
-    "SVD/svd.safetensors": language.v_model_svd,
-    "SVD/svd_xt.safetensors": language.v_model_svd_xt
 }
 
 video_model_description_localisation = {
@@ -78,7 +65,7 @@ async def choose_model_command(message: Message, state: FSMContext):
     session.close()
 
     await message.answer(
-        text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": model_name_localisation.get(model)}),
+        text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": image_models.get(model).name_text}),
         reply_markup=choose_model_keyboard()
     )
 
@@ -95,7 +82,7 @@ async def choose_model(call: CallbackQuery, state: FSMContext):
     session.close()
 
     await call.message.answer(
-        text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": model_name_localisation.get(model)}),
+        text=LanguageModel.with_context(template=language.model_choice_desc, context={"model": image_models.get(model).name_text}),
         reply_markup=choose_model_keyboard()
     )
 
@@ -112,7 +99,7 @@ async def choose_video_model(call: CallbackQuery, state: FSMContext):
     session.close()
 
     await call.message.answer(
-        text=LanguageModel.with_context(template=language.choose_video_model_desc, context={"model": video_model_name_localisation.get(model)}),
+        text=LanguageModel.with_context(template=language.choose_video_model_desc, context={"model": video_models.get(model).name_text}),
         reply_markup=choose_video_model_keyboard()
     )
 
@@ -123,9 +110,9 @@ async def display_model_details(call: CallbackQuery, state: FSMContext):
 
     model_name = call.data.split(':')[-1]
 
-    model_gallery = gallery.mappings.get(model_name_localisation[model_name].lower())
+    model_gallery = gallery.mappings.get(image_models[model_name].lower())
 
-    description_text = model_description_localisation.get(model_name)
+    description_text = image_models.get(model_name).desc_text
 
     print(f'DEBUG DISPLAY MODEL: {model_name}, {model_gallery}')
     if model_gallery:
@@ -144,7 +131,7 @@ async def display_video_model_details(call: CallbackQuery, state: FSMContext):
     model_name = call.data.split(':')[-1]
 
     await call.message.answer(
-        text=video_model_description_localisation.get(model_name),
+        text=video_models.get(model_name).desc_text,
         reply_markup=confirm_video_model_keyboard(model_name=model_name)
     )
 
@@ -154,7 +141,7 @@ async def confirm_model_choice_message(call: CallbackQuery, state: FSMContext):
     await call.message.delete()
 
     model_name = call.data.split(':')[-1]
-    model_gallery = model_name_localisation[model_name].lower()
+    model_gallery = image_models[model_name].name_text.lower()
 
     tgid = call.message.chat.id
 
@@ -176,7 +163,7 @@ async def confirm_video_model_choice_message(call: CallbackQuery, state: FSMCont
     await call.message.delete()
 
     model_name = call.data.split(':')[-1]
-    model_gallery = video_model_name_localisation[model_name]
+    model_gallery = video_models[model_name].name_text
 
     tgid = call.message.chat.id
 
