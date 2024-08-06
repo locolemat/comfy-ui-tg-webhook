@@ -22,6 +22,9 @@ from states import states
 from utils import utils
 from client import client
 
+async def servers_start_polling():
+    for server in Server.get_all_servers():
+        await server.server_polling()
 
 router = Router()
 

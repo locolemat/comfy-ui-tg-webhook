@@ -3,7 +3,6 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
-from server_queue import Server
 from token_reader import settings
 from handlers import generation, user_settings
 from configuration.localisation import language
@@ -30,10 +29,7 @@ async def main():
     dp.include_router(user_settings.router)
 
     dp.startup.register(setup_bot_commands)
-
-    for server in Server.get_all_servers():
-        await server.server_polling()
-
+    await generation.servers_start_polling()
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
