@@ -212,6 +212,7 @@ class Queue(Base):
 Base.metadata.create_all(queue_engine)
 with Session(queue_engine) as session:
     session.query(Server).delete()
+    session.query(Queue).delete() #to be deleted
     SERVER_LIST = [Server(address=server['address'], eta=-1.0, busy=False, for_video=server['for_video']) for server in ADDRESSES]
     session.add_all(SERVER_LIST)
     session.commit()
