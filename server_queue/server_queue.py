@@ -133,14 +133,14 @@ class Queue(Base):
         with Session(queue_engine) as session:
             row = session.get(Queue, r_id)
             session.delete(row)
-            stmt = (
-                update(Queue)
-                .where(Queue.id > row.id)
-                .values(id=id-1)
-            )
-            session.execute(stmt)
             session.commit()
             return row
+
+
+    @classmethod
+    def get_queue(cls):
+        with Session(queue_engine) as session:
+            session.select(Queue).order_by(Queue.id)
 
 
     @classmethod
