@@ -23,7 +23,7 @@ from utils import utils
 from client import client
 
 async def servers_start_polling():
-    async for server in Server.get_all_servers():
+    for server in Server.get_all_servers():
         await server.server_polling()
 
 router = Router()
