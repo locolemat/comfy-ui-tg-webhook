@@ -1,5 +1,6 @@
 import os
 import time
+import asyncio
 
 from random import choice
 
@@ -23,8 +24,8 @@ from utils import utils
 from client import client
 
 async def servers_start_polling():
-    for server in Server.get_all_servers():
-        await server.server_polling()
+    servers = Server.get_all_servers()
+    await asyncio.gather([server.server_polling() for server in servers])
 
 router = Router()
 
