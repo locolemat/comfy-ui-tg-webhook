@@ -108,7 +108,7 @@ class Server(Base):
 #             if not server.busy():
 #                 return server
         
-class Queue:
+class Queue(Base):
     __tablename__ = "Queue"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
