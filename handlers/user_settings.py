@@ -19,20 +19,6 @@ from users import User
 
 router = Router()
 
-model_description_localisation = {
-    "anithing_v11Pruned.safetensors": language.model_anithing_desc,
-    "dreamshaper_8.safetensors": language.model_dreamshaper_desc,
-    "epicrealism_naturalSinRC1VAE.safetensors": language.model_epicrealism_desc,
-    "photon_v1.safetensors": language.model_photon_desc,
-    "realisticVisionV60B1_v51HyperVAE.safetensors": language.model_realisticvision_desc,
-    "turbovisionxlSuperFastXL.safetensors": language.model_turbovisionxl_desc
-}
-
-video_model_description_localisation = {
-    "SVD/svd.safetensors": language.v_model_svd_desc,
-    "SVD/svd_xt.safetensors": language.v_model_svd_xt_desc
-}
-
 
 @router.message(Command('generate'), StateFilter(None))
 async def begin_generation_command(message: Message, state: FSMContext):
