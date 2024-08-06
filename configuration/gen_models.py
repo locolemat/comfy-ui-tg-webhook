@@ -1,4 +1,4 @@
-from localisation import language
+from .localisation import language
 
 class GenModel:
     def __init__(self, name, name_text, desc_text):
