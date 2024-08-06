@@ -11,7 +11,8 @@ from aiogram.fsm.context import FSMContext
 from configuration.localisation import LanguageModel, language
 from keyboards import dimensions_keyboard, greeting_keyboard
 from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, WorkflowImageToVideo
-from server_queue import Server, Queue, NUMBER_OF_VIDEO_SERVERS, NUMBER_OF_IMAGE_SERVERS
+from server_queue import Queue
+from servers import Server
 
 
 from model import create_session, create_session_queue
