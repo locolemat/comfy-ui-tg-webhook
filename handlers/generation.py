@@ -10,7 +10,6 @@ from configuration.localisation import LanguageModel, language
 from keyboards import dimensions_keyboard, greeting_keyboard
 from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, WorkflowImageToVideo
 from server_queue import Server, Queue
-from server_queue.propagation import process_queue_result
 
 
 from model import create_session
