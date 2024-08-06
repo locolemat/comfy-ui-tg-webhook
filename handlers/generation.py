@@ -25,7 +25,7 @@ from client import client
 
 async def servers_start_polling():
     servers = Server.get_all_servers()
-    tasks = [server.server_polling for server in servers]
+    tasks = [server.server_polling() for server in servers]
     await asyncio.gather(*tasks)
 
 router = Router()
