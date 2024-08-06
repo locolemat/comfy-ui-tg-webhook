@@ -31,7 +31,7 @@ async def main():
 
     dp.startup.register(setup_bot_commands)
 
-    for server in list(Server.get_all_servers()):
+    for server in Server.get_all_servers():
         await server.server_polling()
 
     await bot.delete_webhook(drop_pending_updates=True)
