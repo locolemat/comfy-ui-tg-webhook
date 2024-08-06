@@ -82,9 +82,8 @@ class Server(Base):
         return f'Server ID{self.id}: {self.address}, currently busy: {self.busy}. ETA Coefficient: {self.eta_coefficient}'
 
 
-    async def server_polling(self):
-        queue = Queue.get_server_queue(self.address)
-        for queue_item in queue:
+    async def server_polling(self): 
+        async for queue_item in Queue.get_server_queue(self.address):
             print(f"started polling on server {self.address}")
             await queue_work(queue_item=queue_item, workflow=queue_item.workflow, server=self)
 

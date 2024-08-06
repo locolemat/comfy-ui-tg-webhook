@@ -23,7 +23,7 @@ from utils import utils
 from client import client
 
 async def servers_start_polling():
-    for server in Server.get_all_servers():
+    async for server in Server.get_all_servers():
         await server.server_polling()
 
 router = Router()
@@ -234,7 +234,7 @@ async def from_text_generation(message: Message, state: FSMContext):
 
     Queue.add_new_queue_item(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=dimensions, user_id=message.chat.id, upload_image_name="", server_address=server_address)
     await state.clear()
-    
+
     # DEPRECATED:
     # if server:
 
