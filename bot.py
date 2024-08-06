@@ -8,6 +8,7 @@ from token_reader import settings
 from handlers import generation, user_settings
 
 from configuration.localisation import language
+from server_queue.server_queue import Queue
 
 bot = Bot(token=settings.bot_token.get_secret_value(),
           default=DefaultBotProperties(
@@ -24,6 +25,8 @@ async def setup_bot_commands():
     await bot.set_my_commands(bot_commands)
 
 async def main():
+
+    Queue.add_new_queue_item(prompt="a", negative_prompt="a", workflow="a", dimensions="a", user_id="a")
     
     dp = Dispatcher()
     dp.include_router(generation.router)
@@ -33,6 +36,8 @@ async def main():
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
+
+
 
 if __name__ == "__main__":
     asyncio.run(main())

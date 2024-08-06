@@ -118,6 +118,16 @@ class Queue(Base):
     _dimensions: Mapped[str] = mapped_column("dimensions", String)
     _user_id: Mapped[str] = mapped_column("user_id", String)
 
+
+    @classmethod
+    def add_new_queue_item(cls, prompt, negative_prompt, workflow, dimensions, user_id):
+        with Session(queue_engine) as session:
+            queue_item = Queue(prompt=prompt, negative_prompt=prompt, workflow=workflow, dimensions=dimensions, user_id=user_id)
+            session.add(queue_item)
+            session.commit()
+        session.close()
+
+
     @hybrid_property
     def prompt(self):
         return self._prompt
