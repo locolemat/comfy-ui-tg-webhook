@@ -1,6 +1,8 @@
 import os
 import time
 
+from random import choice
+
 from aiogram import Router, F
 from aiogram.filters import CommandStart, StateFilter, Command
 from aiogram.types import Message, CallbackQuery, FSInputFile
@@ -9,10 +11,10 @@ from aiogram.fsm.context import FSMContext
 from configuration.localisation import LanguageModel, language
 from keyboards import dimensions_keyboard, greeting_keyboard
 from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, WorkflowImageToVideo
-from server_queue import Server, Queue
+from server_queue import Server, Queue, NUMBER_OF_VIDEO_SERVERS, NUMBER_OF_IMAGE_SERVERS
 
 
-from model import create_session
+from model import create_session, create_session_queue
 
 from users import User
 
@@ -212,22 +214,22 @@ async def from_text_generation(message: Message, state: FSMContext):
     workflow = data["workflow"]
     prompt = data["prompt"]
     negative_prompt = message.text
-
+    dimensions = data["dimensions"]
     file_type = workflow.file_type
     folder = workflow.folder
-    
-    length = data.get("length") or 0
 
-
-    session = create_session()
-    server = Server.find_available(session) if workflow == WorkflowTextToImage else Server.find_available_for_video(session)
-    session.close()
+    # session = create_session()
+    # server = Server.find_available(session) if workflow == WorkflowTextToImage else Server.find_available_for_video(session)
+    # session.close()
 
     session = create_session()
-    user = User.return_user_if_exists(tgid=message.chat.id, session=session)
-    model = user.preferred_model
-    video_model = user.preferred_video_model
+    if workflow == WorkflowTextToImage:
+        server_address = choice(Server.find_available_for_text(session)).address
+    else:
+        server_address = choice(Server.find_available_for_video(session)).address
     session.close()
+
+    Queue.add_new_queue_item(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=dimensions, user_id=message.chat.id, upload_image_name="", server_address=server_address)
 
     # DEPRECATED:
     # if server:
@@ -303,6 +305,7 @@ async def from_image_generation(message: Message, state: FSMContext):
     workflow = data["workflow"]
     file_type = workflow.file_type
     folder = workflow.folder
+    dimensions = data["dimensions"]
 
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload')
     photo_id = message.photo[-1].file_id
@@ -315,8 +318,12 @@ async def from_image_generation(message: Message, state: FSMContext):
     
 
     session = create_session()
-    server = Server.find_available_for_video(session)
+    server_address = choice(Server.find_available_for_video(session)).address
     session.close()
+
+    Queue.add_new_queue_item(prompt="", negative_prompt="", workflow=workflow, dimensions=dimensions, user_id=message.chat.id, upload_image_name=photo_path, server_address=server_address)
+
+
 
     # DEPRECATED:
     # if server:

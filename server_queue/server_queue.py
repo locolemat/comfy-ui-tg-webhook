@@ -61,14 +61,14 @@ class Server(Base):
     @classmethod
     def find_available_for_text(cls, session):
         print('available for text')
-        server = session.scalars(select(Server).where(Server.busy == 0).where(Server.for_video == 0))
+        server = session.scalars(select(Server).where(Server.for_video == 0))
         return server
     
 
     @classmethod
     def find_available_for_video(cls, session):
         print('available for video')
-        server = session.scalars(select(Server).where(Server.busy == 0).where(Server.for_video == 1))
+        server = session.scalars(select(Server).where(Server.for_video == 1))
         return server
 
     def __repr__(self):
@@ -121,9 +121,9 @@ class Queue(Base):
     _server_address: Mapped[str] = mapped_column("server_address", String)
 
     @classmethod
-    def add_new_queue_item(cls, prompt, negative_prompt, workflow, dimensions, user_id, upload_image_name):
+    def add_new_queue_item(cls, prompt, negative_prompt, workflow, dimensions, user_id, upload_image_name, server_address):
         with Session(queue_engine) as session:
-            queue_item = Queue(prompt=prompt, negative_prompt=prompt, workflow=workflow, dimensions=dimensions, user_id=user_id, upload_image_name=upload_image_name)
+            queue_item = Queue(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=dimensions, user_id=user_id, upload_image_name=upload_image_name, server_address=server_address)
             session.add(queue_item)
             session.commit()
 
@@ -231,7 +231,8 @@ with Session(queue_engine) as session:
     SERVER_LIST = [Server(address=server['address'], eta=-1.0, busy=False, for_video=server['for_video']) for server in ADDRESSES]
     session.add_all(SERVER_LIST)
     session.commit()
-
+    NUMBER_OF_VIDEO_SERVERS = len(Server.find_available_for_video(session))
+    NUMBER_OF_IMAGE_SERVERS = len(Server.find_available_for_images(session))
 
 # DEPRECATED:
 # class QueueItem:
