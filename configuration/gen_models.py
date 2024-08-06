@@ -15,13 +15,13 @@ class GenModel:
 class ImgModel(GenModel):
     def __init__(self, name, name_text, desc_text):
         super().__init__(name=name, name_text=name_text, desc_text=desc_text)
-        self.gen_type = "model:"
+        self.gen_type = "model"
 
 
 class VideoModel(GenModel):
     def __init__(self, name, name_text, desc_text):
         super().__init__(name=name, name_text=name_text, desc_text=desc_text)
-        self.gen_type = "v_model:"
+        self.gen_type = "v_model"
 
 
 model_anithing = ImgModel(name="anithing_v11Pruned.safetensors", name_text=language.model_anithing, desc_text=language.model_anithing_desc)

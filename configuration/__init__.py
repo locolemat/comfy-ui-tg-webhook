@@ -1,1 +1,0 @@
-from .gen_models import image_models, video_models

@@ -1,6 +1,7 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram import types
 from configuration.localisation import language, LanguageModel
+from configuration.gen_models import image_models, video_models
 
 def generation_keyboard() -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
@@ -41,13 +42,9 @@ def greeting_keyboard() -> InlineKeyboardBuilder:
 def choose_model_keyboard() -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
-    builder.add(types.InlineKeyboardButton(text=language.model_anithing, callback_data="model:anithing_v11Pruned.safetensors"))
-    builder.add(types.InlineKeyboardButton(text=language.model_dreamshaper, callback_data="model:dreamshaper_8.safetensors"))
-    builder.add(types.InlineKeyboardButton(text=language.model_epicrealism, callback_data="model:epicrealism_naturalSinRC1VAE.safetensors"))
-    builder.add(types.InlineKeyboardButton(text=language.model_photon, callback_data="model:photon_v1.safetensors"))
-    builder.add(types.InlineKeyboardButton(text=language.model_realisticvision, callback_data="model:realisticVisionV60B1_v51HyperVAE.safetensors"))
+    for model in image_models:
+        builder.add(types.InlineKeyboardButton(text=model.name_text, callback_data=model.get_button_callback()))
     # builder.add(types.InlineKeyboardButton(text=language.model_turbovisionxl, callback_data="model:turbovisionxlSuperFastXL.safetensors"))
-
 
     builder.adjust(3)
     return builder.as_markup()
@@ -56,10 +53,9 @@ def choose_model_keyboard() -> InlineKeyboardBuilder:
 def choose_video_model_keyboard() -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
-    builder.add(types.InlineKeyboardButton(text=language.v_model_svd, callback_data="v_model:SVD/svd.safetensors"))
-    builder.add(types.InlineKeyboardButton(text=language.v_model_svd_xt, callback_data="v_model:SVD/svd_xt.safetensors"))
-    
-
+    for model in video_models:
+        builder.add(types.InlineKeyboardButton(text=model.name_text, callback_data=model.get_button_callback()))
+        
     builder.adjust(2)
     return builder.as_markup()
 
