@@ -6,7 +6,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from model import Base, queue_engine
 from .server_queue import Queue
-from propagation import queue_work
+import propagation
 
 class Server(Base):
     __tablename__ = "Servers"
