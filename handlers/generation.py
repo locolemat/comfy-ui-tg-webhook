@@ -233,7 +233,8 @@ async def from_text_generation(message: Message, state: FSMContext):
     session.close()
 
     Queue.add_new_queue_item(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=dimensions, user_id=message.chat.id, upload_image_name="", server_address=server_address)
-
+    await state.clear()
+    
     # DEPRECATED:
     # if server:
 
@@ -326,7 +327,7 @@ async def from_image_generation(message: Message, state: FSMContext):
 
     Queue.add_new_queue_item(prompt="", negative_prompt="", workflow=workflow, dimensions=dimensions, user_id=message.chat.id, upload_image_name=photo_path, server_address=server_address)
 
-
+    await state.clear()
 
     # DEPRECATED:
     # if server:
