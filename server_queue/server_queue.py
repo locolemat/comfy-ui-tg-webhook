@@ -1,7 +1,7 @@
 from workflows.controller import Workflow
 from configuration.config import ADDRESSES
 
-from sqlalchemy import String, ForeignKey, Float, Boolean, select, delete
+from sqlalchemy import String, ForeignKey, Float, Boolean, select, delete, update
 from sqlalchemy.orm import Mapped, mapped_column, Session
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -129,10 +129,16 @@ class Queue(Base):
 
 
     @classmethod
-    def delete_queue_item(cls, id):
+    def delete_queue_item(cls, r_id):
         with Session(queue_engine) as session:
-            row = session.get(Queue, id)
+            row = session.get(Queue, r_id)
             session.delete(row)
+            stmt = (
+                update(Queue)
+                .where(Queue.id > row.id)
+                .values(id=id-1)
+            )
+            session.execute(stmt)
             session.commit()
             return row
 
