@@ -38,9 +38,8 @@ class Queue(Base):
 
 
     @classmethod
-    def get_queue(cls):
-        with Session(queue_engine) as session:
-            return list(session.query(Queue).order_by(Queue.id))
+    def get_queue(cls, session):
+        return session.query(Queue).order_by(Queue.id)
 
 
     @classmethod
