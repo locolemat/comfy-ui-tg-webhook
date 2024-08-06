@@ -8,7 +8,6 @@ from model import Base, queue_engine
 from .server_queue import Queue
 import propagation
 
-
 class Server(Base):
     __tablename__ = "Servers"
 
