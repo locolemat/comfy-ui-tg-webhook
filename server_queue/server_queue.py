@@ -61,7 +61,7 @@ class Server(Base):
     @classmethod
     def find_available_for_text(cls, session):
         print('available for text')
-        server = session.scalar(select(Server).where(Server.busy == 0).where(Server.for_video == 0))
+        server = session.scalars(select(Server).where(Server.busy == 0).where(Server.for_video == 0))
         return server
     
 

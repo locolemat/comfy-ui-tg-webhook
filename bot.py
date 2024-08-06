@@ -8,7 +8,7 @@ from token_reader import settings
 from handlers import generation, user_settings
 
 from configuration.localisation import language
-from server_queue.server_queue import Queue
+from server_queue.server_queue import Server
 
 bot = Bot(token=settings.bot_token.get_secret_value(),
           default=DefaultBotProperties(
@@ -25,11 +25,8 @@ async def setup_bot_commands():
     await bot.set_my_commands(bot_commands)
 
 async def main():
-    Queue.add_new_queue_item(prompt="a", negative_prompt="a", dimensions="a", workflow="a", user_id="a", upload_image_name="a")
-    Queue.add_new_queue_item(prompt="a", negative_prompt="a", dimensions="a", workflow="a", user_id="a", upload_image_name="a")
-    for item in Queue.get_queue():
-        print(item.id)
-        
+    for server in Server.find_available_for_text():
+        print(server.address)
     dp = Dispatcher()
     dp.include_router(generation.router)
     dp.include_router(user_settings.router)

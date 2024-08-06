@@ -24,6 +24,7 @@ async def wake_queue():
 
 async def queue_work(starting_id: int):
     if Queue.get_queue_length() > 0:
+        
         queue_item = Queue.get_queue_item_by_id(starting_id)
         workflow = WORKFLOW_MAPPING.get(queue_item.workflow)
 
