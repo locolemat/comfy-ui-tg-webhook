@@ -140,7 +140,7 @@ class Queue(Base):
     @classmethod
     def get_queue(cls):
         with Session(queue_engine) as session:
-            session.select(Queue).order_by(Queue.id)
+            return session.scalars(select(Queue).order_by(Queue.id))
 
 
     @classmethod
