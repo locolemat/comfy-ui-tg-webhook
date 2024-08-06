@@ -6,9 +6,9 @@ from aiogram.client.default import DefaultBotProperties
 
 from token_reader import settings
 from handlers import generation, user_settings
-
-from server_queue import SERVER_LIST
 from configuration.localisation import language
+
+from server_queue import Server
 
 bot = Bot(token=settings.bot_token.get_secret_value(),
           default=DefaultBotProperties(
@@ -31,7 +31,7 @@ async def main():
 
     dp.startup.register(setup_bot_commands)
 
-    for server in SERVER_LIST:
+    for server in Server.get_all_servers():
         await server.server_polling()
 
     await bot.delete_webhook(drop_pending_updates=True)

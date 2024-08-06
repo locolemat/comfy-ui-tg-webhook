@@ -71,6 +71,12 @@ class Server(Base):
         print('available for video')
         server = session.scalars(select(Server).where(Server.for_video == 1))
         return server
+    
+
+    @classmethod
+    def get_all_servers(cls):
+        with Session(queue_engine) as session:
+            return session.query(Server)
 
 
     def __repr__(self):
