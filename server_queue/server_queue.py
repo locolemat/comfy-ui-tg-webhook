@@ -128,6 +128,15 @@ class Queue(Base):
         session.close()
 
 
+    @classmethod
+    def delete_queue_item(cls, id):
+        with Session(queue_engine) as session:
+            row = session.get(Queue, id)
+            session.delete(row)
+            session.commit()
+        session.close()
+
+
     @hybrid_property
     def prompt(self):
         return self._prompt
