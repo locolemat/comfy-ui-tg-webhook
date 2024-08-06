@@ -169,76 +169,76 @@ class Queue:
     
 
 
-# class QueueItem:
-#     def __init__(self, prompt: str, workflow: Workflow, dimensions: str, user_id: str, length: int = None, negative_prompt: str = ""):
-#         self._prompt = prompt
-#         self._workflow = workflow
-#         self._dimensions = dimensions
-#         self._user_id = user_id
-#         self._length = length
-#         self._negative_prompt = negative_prompt
+class QueueItem:
+    def __init__(self, prompt: str, workflow: Workflow, dimensions: str, user_id: str, length: int = None, negative_prompt: str = ""):
+        self._prompt = prompt
+        self._workflow = workflow
+        self._dimensions = dimensions
+        self._user_id = user_id
+        self._length = length
+        self._negative_prompt = negative_prompt
 
 
-#     def negative_prompt(self, negative_prompt: str | None = None) -> str | None:
-#         if negative_prompt:
-#             self._negative_prompt = negative_prompt
-#         else:
-#             return self._negative_prompt
+    def negative_prompt(self, negative_prompt: str | None = None) -> str | None:
+        if negative_prompt:
+            self._negative_prompt = negative_prompt
+        else:
+            return self._negative_prompt
 
 
-#     def length(self, length: str | None = None) -> str | None:
-#         if length:
-#             self._length = length
-#         else:
-#             return self._length
+    def length(self, length: str | None = None) -> str | None:
+        if length:
+            self._length = length
+        else:
+            return self._length
     
-#     def user_id(self, user_id: str | None = None) -> str | None:
-#         if user_id is not None:
-#             self._user_id = user_id
-#         else:
-#             return self._user_id
+    def user_id(self, user_id: str | None = None) -> str | None:
+        if user_id is not None:
+            self._user_id = user_id
+        else:
+            return self._user_id
         
     
-#     def prompt(self, prompt: str | None = None) -> str | None:
-#         if prompt is not None:
-#             self._prompt = prompt
-#         else:
-#             return self._prompt
+    def prompt(self, prompt: str | None = None) -> str | None:
+        if prompt is not None:
+            self._prompt = prompt
+        else:
+            return self._prompt
         
 
-#     def workflow(self, workflow: Workflow | None = None) -> Workflow | None:
-#         if workflow is not None:
-#             self._workflow = workflow
-#         else:
-#             return self._workflow
+    def workflow(self, workflow: Workflow | None = None) -> Workflow | None:
+        if workflow is not None:
+            self._workflow = workflow
+        else:
+            return self._workflow
         
 
-#     def dimensions(self, dimensions: str | None = None) -> str | None:
-#         if dimensions is not None:
-#             self._dimensions = dimensions
-#         else:
-#             return self._dimensions
+    def dimensions(self, dimensions: str | None = None) -> str | None:
+        if dimensions is not None:
+            self._dimensions = dimensions
+        else:
+            return self._dimensions
 
 
-# class ServerQueue:
-#     def __init__(self):
-#         self._queue = []
-
-    
-#     def add_to_queue(self, queue_item: QueueItem):
-#         self._queue.append(queue_item)
+class ServerQueue:
+    def __init__(self):
+        self._queue = []
 
     
-#     def get_length(self):
-#         return len(self._queue)
+    def add_to_queue(self, queue_item: QueueItem):
+        self._queue.append(queue_item)
+
+    
+    def get_length(self):
+        return len(self._queue)
     
     
-#     def advance_queue(self) -> QueueItem | None:
-#         if len(self._queue) != 0:
-#             return self._queue.pop()
+    def advance_queue(self) -> QueueItem | None:
+        if len(self._queue) != 0:
+            return self._queue.pop()
 
 
-# QUEUE = ServerQueue()
+QUEUE = ServerQueue()
 
 Base.metadata.create_all(queue_engine)
 with Session(queue_engine) as session:
