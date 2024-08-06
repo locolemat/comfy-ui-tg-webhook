@@ -3,7 +3,7 @@ import os
 
 from bot import bot
 
-from model import create_session_queue
+from model import create_session
 
 from server_queue import Queue
 from configuration.localisation import LanguageModel, language
@@ -44,8 +44,9 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow, serve
 
     dimensions = utils.get_dimensions(queue_item.dimensions)
 
-    session = create_session_queue()
+    session = create_session()
     user = User.return_user_if_exists(session=session, tgid=queue_item.user_id)
+    session.close()
 
     model = user.preferred_model
     video_model = user.preferred_video_model
@@ -79,13 +80,11 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow, serve
 
     server.busy = False
     Queue.delete_queue_item(queue_item.id)
-    session.commit()
-    session.close()
 
 
 async def process_queue_result_image(queue_item: Queue, workflow: Workflow, server):
     print("BEGAN PROPAGATING EVENT")
-    session = create_session_queue()
+    
 
     await bot.send_message(
         chat_id=queue_item.user_id,
@@ -96,6 +95,13 @@ async def process_queue_result_image(queue_item: Queue, workflow: Workflow, serv
     )
 
     dimensions = utils.get_dimensions(queue_item.dimensions)
+
+    session = create_session()
+    user = User.return_user_if_exists(session=session, tgid=queue_item.user_id)
+    session.close()
+
+    model = user.preferred_model
+    video_model = user.preferred_video_model
 
     workflow = queue_item.workflow
     file_type = workflow.file_type
@@ -109,7 +115,7 @@ async def process_queue_result_image(queue_item: Queue, workflow: Workflow, serv
     await client.upload_image(address=server.address, image_path=photo_path)
 
     print('Propagation: make a query')
-    await client.prompt_query(address=server.address, prompt=os.path.basename(queue_item.prompt), id = id, workflow=workflow, width=dimensions["width"], height=dimensions["height"], frames=0)
+    await client.prompt_query(address=server.address, prompt=os.path.basename(queue_item.prompt), id = id, workflow=workflow, width=dimensions["width"], height=dimensions["height"], frames=0, model=model, video_model=video_model)
 
     start_time = time.time()
     print('Propagation: start polling')
@@ -123,5 +129,4 @@ async def process_queue_result_image(queue_item: Queue, workflow: Workflow, serv
     await bot.send_video(queue_item.user_id, result, caption=language.video_ready)
 
     server.busy = False
-    session.commit()
-    session.close()
+    Queue.delete_queue_item(queue_item.id)
