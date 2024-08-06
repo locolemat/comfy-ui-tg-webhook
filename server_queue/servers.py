@@ -5,6 +5,9 @@ from sqlalchemy.orm import Mapped, mapped_column, Session
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from model import Base, queue_engine
+from .server_queue import Queue
+from .propagation import queue_work
+
 
 class Server(Base):
     __tablename__ = "Servers"
@@ -15,7 +18,7 @@ class Server(Base):
     _busy: Mapped[bool] = mapped_column("busy", Boolean)
     _for_video: Mapped[bool] = mapped_column("for_video", Boolean)
 
-    
+
     @hybrid_property
     def address(self):
         return self._address
@@ -72,6 +75,14 @@ class Server(Base):
 
     def __repr__(self):
         return f'Server ID{self.id}: {self.address}, currently busy: {self.busy}. ETA Coefficient: {self.eta_coefficient}'
+
+
+    async def server_polling(self):
+        print(f"started polling on server {self.address}")
+        queue = Queue.get_server_queue(self.address)
+        for queue_item in queue:
+            await queue_work(queue_item=queue_item, workflow=queue_item.workflow, server=self)
+
 
     # def __init__(self, address: str, busy: bool = False):
     #     self._address = address
