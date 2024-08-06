@@ -110,7 +110,7 @@ async def display_model_details(call: CallbackQuery, state: FSMContext):
 
     model_name = call.data.split(':')[-1]
 
-    model_gallery = gallery.mappings.get(image_models[model_name].lower())
+    model_gallery = gallery.mappings.get(image_models.get(model_name).name_text.lower())
 
     description_text = image_models.get(model_name).desc_text
 
