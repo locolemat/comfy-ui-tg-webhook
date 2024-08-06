@@ -25,8 +25,12 @@ async def setup_bot_commands():
     await bot.set_my_commands(bot_commands)
 
 async def main():
-    Queue.delete_queue_item(1)
-    
+    print(f'The length of the Queue is currently {Queue.get_queue_length()}')
+    Queue.add_new_queue_item(prompt='a', negative_prompt='a', workflow='a', dimensions='a', user_id='a')
+    print(f'The length of the Queue is currently {Queue.get_queue_length()}')
+    row = Queue.delete_queue_item(1)
+    print(row)
+    print(row.prompt)
     dp = Dispatcher()
     dp.include_router(generation.router)
     dp.include_router(user_settings.router)

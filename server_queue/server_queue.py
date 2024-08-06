@@ -125,7 +125,6 @@ class Queue(Base):
             queue_item = Queue(prompt=prompt, negative_prompt=prompt, workflow=workflow, dimensions=dimensions, user_id=user_id)
             session.add(queue_item)
             session.commit()
-        session.close()
 
 
     @classmethod
@@ -134,7 +133,13 @@ class Queue(Base):
             row = session.get(Queue, id)
             session.delete(row)
             session.commit()
-        session.close()
+            return row
+
+
+    @classmethod
+    def get_queue_length(cls):
+        with Session(queue_engine) as session:
+            return session.query(Queue).count()
 
 
     @hybrid_property
