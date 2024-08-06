@@ -61,7 +61,7 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow, serve
 
     print('Propagation: make a query')
 
-    await client.prompt_query(prompt=LanguageModel.translate_to_english(queue_item.prompt), negative_prompt=queue_item.negative_prompt, address=server.address, id=id, workflow=workflow, width=dimensions["width"], height=dimensions["height"], frames=0, model=model, video_model=video_model)
+    await client.prompt_query(prompt=LanguageModel.translate_to_english(queue_item.prompt), negative_prompt=queue_item.negative_prompt, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=0, model=model, video_model=video_model)
 
     start_time = time.time()
 
@@ -115,7 +115,7 @@ async def process_queue_result_image(queue_item: Queue, workflow: Workflow, serv
     await client.upload_image(address=server.address, image_path=photo_path)
 
     print('Propagation: make a query')
-    await client.prompt_query(address=server.address, prompt=os.path.basename(queue_item.prompt), id = id, workflow=workflow, width=dimensions["width"], height=dimensions["height"], frames=0, model=model, video_model=video_model)
+    await client.prompt_query(address=server.address, prompt=os.path.basename(queue_item.prompt), id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=0, model=model, video_model=video_model)
 
     start_time = time.time()
     print('Propagation: start polling')
