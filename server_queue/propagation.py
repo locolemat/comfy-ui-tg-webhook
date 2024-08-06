@@ -5,8 +5,7 @@ from bot import bot
 
 from model import create_session_queue
 
-from server_queue import Queue
-from servers import Server
+from server_queue import Queue, Server
 from configuration.localisation import LanguageModel, language
 from users import User
 
