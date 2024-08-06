@@ -107,7 +107,7 @@ async def image_to_video_prompt(call: CallbackQuery, state: FSMContext):
     )
 
     await state.set_state(states.ImageToVideo.choose_length)
-    await state.update_data(workflow=WorkflowImageToVideo)
+    await state.update_data(workflow="i2v")
 
 
 @router.callback_query(states.TextToImage.choose_dimensions, F.data.startswith('d'))
@@ -123,7 +123,7 @@ async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
 
 
     await state.set_state(states.TextToImage.choose_prompt)
-    await state.update_data(workflow=WorkflowTextToImage)
+    await state.update_data(workflow="t2i")
 
 
 @router.callback_query(states.TextToVideo.choose_dimensions, F.data.startswith('d'))
@@ -139,7 +139,7 @@ async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
 
 
     await state.set_state(states.TextToVideo.choose_length)
-    await state.update_data(workflow=WorkflowTextToVideo)
+    await state.update_data(workflow="t2v")
         
 
 @router.message(F.text, states.TextToVideo.choose_length)
