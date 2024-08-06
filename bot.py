@@ -3,12 +3,12 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
-
+from server_queue import Server
 from token_reader import settings
 from handlers import generation, user_settings
 from configuration.localisation import language
 
-from server_queue import Server
+
 
 bot = Bot(token=settings.bot_token.get_secret_value(),
           default=DefaultBotProperties(
