@@ -83,7 +83,9 @@ class Server(Base):
 
 
     async def server_polling(self): 
-        for queue_item in Queue.get_server_queue(self.address):
+        queue = Queue.get_server_queue(self.address)
+        while len(queue) > 0:
+            queue_item = queue.pop()
             print(f"started polling on server {self.address}")
             await queue_work(queue_item=queue_item, workflow=queue_item.workflow, server=self)
 
