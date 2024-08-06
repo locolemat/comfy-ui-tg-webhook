@@ -29,9 +29,9 @@ async def main():
     dp.include_router(user_settings.router)
 
     dp.startup.register(setup_bot_commands)
-    await generation.servers_start_polling()
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
+    await generation.servers_start_polling()
 
 
 
