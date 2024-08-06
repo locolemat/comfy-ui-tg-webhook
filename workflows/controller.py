@@ -15,6 +15,7 @@ class Workflow():
         with open(os.path.join(WORKFLOWS_FOLDER, name)) as f:
             self.file = json.load(f)
     
+
 class WorkflowTextToVideo(Workflow):
     file_type = "mp4"
     folder = "videos"
@@ -41,4 +42,8 @@ class WorkflowImageToVideo(Workflow):
     def __init__(self):
         self.load_workflow('image_to_video.json')
 
-    
+WORKFLOW_MAPPING = {
+    "t2i": WorkflowTextToImage,
+    "t2v": WorkflowTextToVideo,
+    "i2v": WorkflowImageToVideo
+}

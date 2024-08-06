@@ -9,9 +9,7 @@ from aiogram.fsm.context import FSMContext
 from configuration.localisation import LanguageModel, language
 from keyboards import dimensions_keyboard, greeting_keyboard
 from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, WorkflowImageToVideo
-
-from server_queue.server_queue import QueueItem
-from server_queue.server_queue import Server, QUEUE
+from server_queue import Server, Queue
 from server_queue.propagation import process_queue_result
 
 
@@ -232,69 +230,70 @@ async def from_text_generation(message: Message, state: FSMContext):
     video_model = user.preferred_video_model
     session.close()
 
-    if server:
+    # DEPRECATED:
+    # if server:
 
-        server_id = server.id   
+    #     server_id = server.id   
         
-        session = create_session()
-        server = session.get(Server, server_id)
-        server.busy = True
-        session.commit()
+    #     session = create_session()
+    #     server = session.get(Server, server_id)
+    #     server.busy = True
+    #     session.commit()
 
-        await message.answer(
-            text = LanguageModel.with_context(template=language.pre_generation_message,
-                                            context={"action": data["action"],
-                                                    "dimensions": data["dimensions"],
-                                                    "prompt": prompt})
-        )
+    #     await message.answer(
+    #         text = LanguageModel.with_context(template=language.pre_generation_message,
+    #                                         context={"action": data["action"],
+    #                                                 "dimensions": data["dimensions"],
+    #                                                 "prompt": prompt})
+    #     )
 
-        dimensions = utils.get_dimensions(data["dimensions"])
+    #     dimensions = utils.get_dimensions(data["dimensions"])
 
-        await message.answer(
-            text = language.generation_began
-        )
+    #     await message.answer(
+    #         text = language.generation_began
+    #     )
 
-        id = utils.generate_string(10)
-        print(f"Query ID: {id}")
+    #     id = utils.generate_string(10)
+    #     print(f"Query ID: {id}")
 
-        await client.prompt_query(prompt=LanguageModel.translate_to_english(prompt), negative_prompt=negative_prompt, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12, model=model, video_model=video_model)
+    #     await client.prompt_query(prompt=LanguageModel.translate_to_english(prompt), negative_prompt=negative_prompt, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12, model=model, video_model=video_model)
 
-        start_time = time.time()
-        await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
-        print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
+    #     start_time = time.time()
+    #     await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
+    #     print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
         
-        result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
+    #     result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
 
-        result = FSInputFile(os.path.join(result_path, f"{id}_new.{file_type}"), filename=f"{id}_new.{file_type}", chunk_size = 1024)
+    #     result = FSInputFile(os.path.join(result_path, f"{id}_new.{file_type}"), filename=f"{id}_new.{file_type}", chunk_size = 1024)
 
-        if folder == "videos":
-            await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
-        elif folder == "photos":
-            await message.answer_photo(result, caption=language.picture_ready)
-        await state.clear()
+    #     if folder == "videos":
+    #         await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
+    #     elif folder == "photos":
+    #         await message.answer_photo(result, caption=language.picture_ready)
+    #     await state.clear()
 
 
-        session.close()
+    #     session.close()
 
-        session = create_session()
-        server = session.get(Server, server_id)
-        server.busy = False
+    #     session = create_session()
+    #     server = session.get(Server, server_id)
+    #     server.busy = False
         
-        queue_item = QUEUE.advance_queue()
+    #     queue_item = QUEUE.advance_queue()
 
-        if queue_item:
-            await process_queue_result(queue_item=queue_item, server=server)
+    #     if queue_item:
+    #         await process_queue_result(queue_item=queue_item, server=server)
 
-        session.commit()
-        session.close()
+    #     session.commit()
+    #     session.close()
 
-    else:
-        queue_item = QueueItem(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id, length=length)
-        QUEUE.add_to_queue(queue_item=queue_item)
-        position = QUEUE.get_length()
-        await message.answer(
-            text=LanguageModel.with_context(template=language.queue_added, context={"position": position})
-        )
+    # else:
+    #     queue_item = QueueItem(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id, length=length)
+    #     QUEUE.add_to_queue(queue_item=queue_item)
+    #     position = QUEUE.get_length()
+    #     await message.answer(
+    #         text=LanguageModel.with_context(template=language.queue_added, context={"position": position})
+    #     )
 
 
 @router.message(F.photo, states.ImageToVideo.choose_prompt)
@@ -320,52 +319,53 @@ async def from_image_generation(message: Message, state: FSMContext):
     server = Server.find_available_for_video(session)
     session.close()
 
-    if server:
-        server_id = server.id   
+    # DEPRECATED:
+    # if server:
+    #     server_id = server.id   
         
-        session = create_session()
-        server = session.get(Server, server_id)
-        server.busy = True
-        session.commit()
+    #     session = create_session()
+    #     server = session.get(Server, server_id)
+    #     server.busy = True
+    #     session.commit()
 
-        dimensions = utils.get_dimensions(data["dimensions"])
-        await client.upload_image(address=server.address, image_path=photo_path)
+    #     dimensions = utils.get_dimensions(data["dimensions"])
+    #     await client.upload_image(address=server.address, image_path=photo_path)
 
-        await client.prompt_query(address=server.address, prompt=image_name, id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12)
+    #     await client.prompt_query(address=server.address, prompt=image_name, id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=length*12)
 
-        start_time = time.time()
-        await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
-        print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
+    #     start_time = time.time()
+    #     await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
+    #     print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
 
-        result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
+    #     result_path = os.path.join(os.path.dirname(__file__), '..', 'data', folder)
 
-        result = FSInputFile(os.path.join(result_path, f"{id}_new.{file_type}"), filename=f"{id}_new.{file_type}", chunk_size = 1024)
+    #     result = FSInputFile(os.path.join(result_path, f"{id}_new.{file_type}"), filename=f"{id}_new.{file_type}", chunk_size = 1024)
 
-        await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
+    #     await message.bot.send_video(message.chat.id, result, caption=language.video_ready)
 
-        await state.clear()
+    #     await state.clear()
 
-        session.close()
+    #     session.close()
 
-        session = create_session()
-        server = session.get(Server, server_id)
-        server.busy = False
+    #     session = create_session()
+    #     server = session.get(Server, server_id)
+    #     server.busy = False
         
 
-        queue_item = QUEUE.advance_queue()
-        if queue_item:
-            await process_queue_result(queue_item=queue_item, server=server)
+    #     queue_item = QUEUE.advance_queue()
+    #     if queue_item:
+    #         await process_queue_result(queue_item=queue_item, server=server)
 
-        session.commit()
-        session.close()
+    #     session.commit()
+    #     session.close()
 
-    else:
-        queue_item = QueueItem(prompt=photo_path, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id, length=length)
-        QUEUE.add_to_queue(queue_item=queue_item)
-        position = QUEUE.get_length()
-        await message.answer(
-            text=LanguageModel.with_context(template=language.queue_added, context={"position": position})
-        )
+    # else:
+    #     queue_item = QueueItem(prompt=photo_path, workflow=workflow, dimensions=data["dimensions"], user_id=message.chat.id, length=length)
+    #     QUEUE.add_to_queue(queue_item=queue_item)
+    #     position = QUEUE.get_length()
+    #     await message.answer(
+    #         text=LanguageModel.with_context(template=language.queue_added, context={"position": position})
+    #     )
 
 
 
