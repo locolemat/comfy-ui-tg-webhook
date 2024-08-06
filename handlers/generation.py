@@ -10,7 +10,7 @@ from aiogram.fsm.context import FSMContext
 
 from configuration.localisation import LanguageModel, language
 from keyboards import dimensions_keyboard, greeting_keyboard
-from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, WorkflowImageToVideo
+from workflows.controller import WorkflowTextToVideo, WorkflowTextToImage, WorkflowImageToVideo, WORKFLOW_MAPPING
 from server_queue import Queue, Server
 
 
@@ -215,15 +215,15 @@ async def from_text_generation(message: Message, state: FSMContext):
     prompt = data["prompt"]
     negative_prompt = message.text
     dimensions = data["dimensions"]
-    file_type = workflow.file_type
-    folder = workflow.folder
+    file_type = WORKFLOW_MAPPING[workflow].file_type
+    folder = WORKFLOW_MAPPING[workflow].folder
 
     # session = create_session()
     # server = Server.find_available(session) if workflow == WorkflowTextToImage else Server.find_available_for_video(session)
     # session.close()
 
     session = create_session()
-    if workflow == WorkflowTextToImage:
+    if WORKFLOW_MAPPING[workflow] == WorkflowTextToImage:
         server_address = choice(list(Server.find_available_for_text(session))).address
     else:
         server_address = choice(list(Server.find_available_for_video(session))).address
@@ -303,8 +303,8 @@ async def from_image_generation(message: Message, state: FSMContext):
     print(data)
     
     workflow = data["workflow"]
-    file_type = workflow.file_type
-    folder = workflow.folder
+    file_type = WORKFLOW_MAPPING[workflow].file_type
+    folder = WORKFLOW_MAPPING[workflow].folder
     dimensions = data["dimensions"]
 
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload')
