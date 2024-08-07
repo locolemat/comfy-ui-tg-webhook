@@ -1,4 +1,4 @@
-{
+{"prompt":{
   "2": {
     "inputs": {
       "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
@@ -604,4 +604,4 @@
       "title": "Load Image"
     }
   }
-}
+}}
