@@ -102,8 +102,6 @@ async def process_queue_result_image(queue_item: Queue, workflow: Workflow, serv
 
     model = user.preferred_model
     video_model = user.preferred_video_model
-
-    workflow = queue_item.workflow
     file_type = workflow.file_type
     folder = workflow.folder
     print('Propagation: image upload')
