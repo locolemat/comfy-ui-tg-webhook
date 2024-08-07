@@ -86,8 +86,8 @@
   "53": {
     "inputs": {
       "upscale_method": "nearest-exact",
-      "width": 576,
-      "height": 768,
+      "width": {"$eval": "width"},
+      "height": {"$eval": "height"},
       "crop": "disabled",
       "image": [
         "137",
@@ -361,8 +361,8 @@
   },
   "126": {
     "inputs": {
-      "width": 576,
-      "height": 768,
+      "width": {"$eval": "width"},
+      "height": {"$eval": "height"},
       "batch_size": 1
     },
     "class_type": "EmptyLatentImage",
@@ -381,8 +381,8 @@
   },
   "130": {
     "inputs": {
-      "width": 576,
-      "height": 768,
+      "width": {"$eval": "width"},
+      "height": {"$eval": "height"},
       "video_frames": 16,
       "motion_bucket_id": 100,
       "fps": 8,
