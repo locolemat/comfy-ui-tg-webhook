@@ -40,7 +40,7 @@ class WorkflowImageToVideo(Workflow):
     requires_image_upload = True
     
     def __init__(self):
-        self.load_workflow('image_to_video.json')
+        self.load_workflow('triumph_release_v1_i2v_api.json')
 
 WORKFLOW_MAPPING = {
     "t2i": WorkflowTextToImage,
