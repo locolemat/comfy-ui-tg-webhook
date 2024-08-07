@@ -31,7 +31,6 @@ async def main():
     dp.startup.register(setup_bot_commands)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
-    await generation.servers_start_polling()
 
 
 

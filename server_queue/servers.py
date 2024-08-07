@@ -76,6 +76,12 @@ class Server(Base):
     def get_all_servers(cls):
         with Session(queue_engine) as session:
             return list(session.query(Server))
+        
+
+    @classmethod
+    def find_server_by_address(cls, session, address):
+        server = session.scalar(select(Server).where(Server.address == address))
+        return server
 
 
     def __repr__(self):
@@ -84,10 +90,9 @@ class Server(Base):
 
     async def server_polling(self): 
         queue = Queue.get_server_queue(self.address)
-        while len(queue) > 0:
-            queue_item = queue.pop()
-            print(f"started polling on server {self.address}")
-            await queue_work(queue_item=queue_item, workflow=queue_item.workflow, server=self)
+        queue_item = queue.pop()
+        print(f"started polling on server {self.address}")
+        await queue_work(queue_item=queue_item, workflow=queue_item.workflow, server=self)
 
 
     # def __init__(self, address: str, busy: bool = False):
