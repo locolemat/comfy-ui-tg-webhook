@@ -111,8 +111,7 @@ async def process_queue_result_image(queue_item: Queue, workflow: Workflow, serv
 
     await client.upload_image(address=server.address, image_path=photo_path)
 
-    id = utils.generate_string(10)
-    print(f"Query ID: {id}")
+    id = queue_item.upload_image_name.split('/').split('_')[0]
 
     print('Propagation: make a query')
     await client.prompt_query(address=server.address, prompt=os.path.basename(queue_item.prompt), id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=0, model=model, video_model=video_model)
