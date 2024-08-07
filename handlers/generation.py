@@ -114,7 +114,7 @@ async def image_to_video_prompt(call: CallbackQuery, state: FSMContext):
         text = language.video_length_prompt
     )
 
-    await state.set_state(states.ImageToVideo.choose_length)
+    await state.set_state(states.ImageToVideo.choose_prompt)
     await state.update_data(workflow="i2v")
     await unclog_queue()
 
@@ -146,7 +146,7 @@ async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
     )
 
 
-    await state.set_state(states.TextToVideo.choose_length)
+    await state.set_state(states.TextToVideo.choose_prompt)
     await state.update_data(workflow="t2v")
     await unclog_queue()
 
@@ -318,7 +318,6 @@ async def from_image_generation(message: Message, state: FSMContext):
 
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload')
     photo_id = message.photo[-1].file_id
-    length = data.get("length") or 0
 
     id = utils.generate_string(10)
     image_name = f"{id}_up.png"
