@@ -111,12 +111,13 @@ async def image_to_video_prompt(call: CallbackQuery, state: FSMContext):
     await call.message.bot.edit_message_text(
         message_id=call.message.message_id,
         chat_id=call.message.chat.id,
-        text = language.video_length_prompt
+        text = language.video_prompt_invitation
     )
 
     await state.set_state(states.ImageToVideo.choose_prompt)
     await state.update_data(workflow="i2v")
     await unclog_queue()
+
 
 @router.callback_query(states.TextToImage.choose_dimensions, F.data.startswith('d'))
 async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
@@ -134,17 +135,23 @@ async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
     await state.update_data(workflow="t2i")
     await unclog_queue()
 
+
 @router.callback_query(states.TextToVideo.choose_dimensions, F.data.startswith('d'))
 async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
     data = call.data.split("_")[-1]
     await state.update_data(dimensions=data)
 
+    # await call.message.bot.edit_message_text(
+    #     message_id=call.message.message_id,
+    #     chat_id=call.message.chat.id,
+    #     text = language.video_length_prompt
+    # )
+
     await call.message.bot.edit_message_text(
         message_id=call.message.message_id,
         chat_id=call.message.chat.id,
-        text = language.video_length_prompt
+        text = language.prompt_invitation
     )
-
 
     await state.set_state(states.TextToVideo.choose_prompt)
     await state.update_data(workflow="t2v")
@@ -189,6 +196,7 @@ async def choose_length_i2v(message: Message, state: FSMContext):
     await state.update_data(length=length)
     await state.set_state(states.ImageToVideo.choose_prompt)
     await unclog_queue()
+
 
 @router.message(F.text, states.TextToImage.choose_prompt)
 async def t2i_negative_prompt(message: Message, state: FSMContext):
