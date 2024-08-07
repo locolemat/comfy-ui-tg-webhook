@@ -161,7 +161,7 @@
   },
   "107": {
     "inputs": {
-      "ckpt_name": "CyberRealistic_V5_FP16.safetensors"
+      "ckpt_name": "${model}"
     },
     "class_type": "CheckpointLoaderSimple",
     "_meta": {
@@ -372,7 +372,7 @@
   },
   "129": {
     "inputs": {
-      "ckpt_name": "SVD/svd_xt.safetensors"
+      "ckpt_name": "${video_model}"
     },
     "class_type": "ImageOnlyCheckpointLoader",
     "_meta": {
