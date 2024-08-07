@@ -230,7 +230,7 @@ async def from_text_generation(message: Message, state: FSMContext):
         server_address = choice(list(Server.find_available_for_video(session))).address
     Queue.add_new_queue_item(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=dimensions, user_id=message.chat.id, upload_image_name="", server_address=server_address)
     server = Server.find_server_by_address(session, server_address)
-    # await server.server_polling()
+    await server.server_polling()
     session.close()
     await state.clear()
 
