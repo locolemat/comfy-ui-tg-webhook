@@ -39,7 +39,7 @@
   },
   "7": {
     "inputs": {
-      "seed": 22690560172307,
+      "seed": {"$eval": "seed"},
       "steps": 20,
       "cfg": 7,
       "sampler_name": "euler_ancestral",
@@ -289,7 +289,7 @@
   },
   "121": {
     "inputs": {
-      "seed": 444003254036881,
+      "seed": {"$eval": "seed_2"},
       "steps": 20,
       "cfg": 8,
       "sampler_name": "euler",
@@ -451,7 +451,7 @@
   },
   "134": {
     "inputs": {
-      "seed": 954790903871920,
+      "seed": {"$eval": "seed"},
       "steps": 20,
       "cfg": 2.5,
       "sampler_name": "euler",
