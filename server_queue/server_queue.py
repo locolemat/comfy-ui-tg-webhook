@@ -19,11 +19,12 @@ class Queue(Base):
     _user_id: Mapped[str] = mapped_column("user_id", String)
     _upload_image_name: Mapped[str] = mapped_column("upload_image_name", String)
     _server_address: Mapped[str] = mapped_column("server_address", String)
+    _processed: Mapped[bool] = mapped_column("processed", Boolean)
 
     @classmethod
     def add_new_queue_item(cls, prompt, negative_prompt, workflow, dimensions, user_id, upload_image_name, server_address):
         with Session(queue_engine) as session:
-            queue_item = Queue(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=dimensions, user_id=user_id, upload_image_name=upload_image_name, server_address=server_address)
+            queue_item = Queue(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=dimensions, user_id=user_id, upload_image_name=upload_image_name, server_address=server_address, processed=False)
             session.add(queue_item)
             session.commit()
 
@@ -46,7 +47,7 @@ class Queue(Base):
     @classmethod
     def get_server_queue(cls, address):
         with Session(queue_engine) as session:
-            return list(session.scalars(select(Queue).where(Queue.server_address == address)))
+            return list(session.scalars(select(Queue).where(Queue.server_address == address).where(Queue.processed == 0)))
         
 
     @classmethod
@@ -129,6 +130,16 @@ class Queue(Base):
     @server_address.setter
     def server_address(self, server_address):
         self._server_address = server_address
+
+    
+    @hybrid_property
+    def processed(self):
+        return self._processed
+    
+
+    @processed.setter
+    def processed(self, processed):
+        self._processed = processed
 
 
 # DEPRECATED:

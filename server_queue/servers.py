@@ -4,7 +4,7 @@ from sqlalchemy import String, Float, Boolean, select
 from sqlalchemy.orm import Mapped, mapped_column, Session
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from model import Base, queue_engine
+from model import Base, queue_engine, create_session_queue
 from .server_queue import Queue
 from propagation import queue_work
 
@@ -91,6 +91,10 @@ class Server(Base):
     async def server_polling(self): 
         queue = Queue.get_server_queue(self.address)
         for queue_item in queue:
+            with create_session_queue() as session:
+                queue_item.processed = True
+                session.commit()
+                
             print(f"started polling on server {self.address}")
             await queue_work(queue_item=queue_item, workflow=queue_item.workflow, server=self)
 
