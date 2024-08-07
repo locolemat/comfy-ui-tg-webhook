@@ -42,7 +42,7 @@ async def download(id, address, file_type="png"):
     folder = "photos"
     if file_type != "png":
         folder = "videos"
-        await asyncio.sleep(2)
+        await asyncio.sleep(5)
     else:
         await asyncio.sleep(1)
 
