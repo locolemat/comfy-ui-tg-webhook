@@ -30,7 +30,7 @@ greeting_buttons_text = {'i2v':language.button_generate_image_video, 't2v': lang
 async def unclog_queue():
     with create_session_queue() as session:
         for server in Server.get_all_servers():
-            server.server_polling()
+            await server.server_polling()
 
 
 # @router.message(F.text, Command('armageddon'))
