@@ -27,6 +27,11 @@ from client import client
 router = Router()
 
 greeting_buttons_text = {'i2v':language.button_generate_image_video, 't2v': language.button_generate_text_video, 't2i': language.button_generate_text_image}
+async def unclog_queue():
+    with create_session_queue() as session:
+        for server in Server.get_all_servers():
+            server.server_polling()
+
 
 # @router.message(F.text, Command('armageddon'))
 # async def unleash_gallery(message: Message, state: FSMContext):
@@ -76,6 +81,8 @@ async def greeting_reply(message: Message, state: FSMContext):
         reply_markup=greeting_keyboard()
     )
 
+    await unclog_queue()
+
 
 @router.callback_query(F.data.in_(greeting_buttons_text.keys()), StateFilter(None))
 async def text_to_video_dimensions(call: CallbackQuery, state: FSMContext):
@@ -94,6 +101,7 @@ async def text_to_video_dimensions(call: CallbackQuery, state: FSMContext):
         await state.set_state(states.ImageToVideo.choose_dimensions)
 
     await state.update_data(action=greeting_buttons_text.get(call.data))
+    await unclog_queue()
 
 
 @router.callback_query(states.ImageToVideo.choose_dimensions, F.data.startswith('d'))
@@ -109,7 +117,7 @@ async def image_to_video_prompt(call: CallbackQuery, state: FSMContext):
 
     await state.set_state(states.ImageToVideo.choose_length)
     await state.update_data(workflow="i2v")
-
+    await unclog_queue()
 
 @router.callback_query(states.TextToImage.choose_dimensions, F.data.startswith('d'))
 async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
@@ -125,7 +133,7 @@ async def text_to_image_prompt(call: CallbackQuery, state: FSMContext):
 
     await state.set_state(states.TextToImage.choose_prompt)
     await state.update_data(workflow="t2i")
-
+    await unclog_queue()
 
 @router.callback_query(states.TextToVideo.choose_dimensions, F.data.startswith('d'))
 async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
@@ -141,7 +149,7 @@ async def text_to_video_prompt(call: CallbackQuery, state: FSMContext):
 
     await state.set_state(states.TextToVideo.choose_length)
     await state.update_data(workflow="t2v")
-        
+    await unclog_queue()
 
 @router.message(F.text, states.TextToVideo.choose_length)
 async def choose_length(message: Message, state: FSMContext):
@@ -161,7 +169,7 @@ async def choose_length(message: Message, state: FSMContext):
 
     await state.update_data(length=length)
     await state.set_state(states.TextToVideo.choose_prompt)
-
+    await unclog_queue()
 
 @router.message(F.text, states.ImageToVideo.choose_length)
 async def choose_length_i2v(message: Message, state: FSMContext):
@@ -181,7 +189,7 @@ async def choose_length_i2v(message: Message, state: FSMContext):
 
     await state.update_data(length=length)
     await state.set_state(states.ImageToVideo.choose_prompt)
-
+    await unclog_queue()
 
 @router.message(F.text, states.TextToImage.choose_prompt)
 async def t2i_negative_prompt(message: Message, state: FSMContext):
@@ -193,7 +201,7 @@ async def t2i_negative_prompt(message: Message, state: FSMContext):
     )
 
     await state.set_state(states.TextToImage.choose_negative_prompt)
-
+    await unclog_queue()
 
 @router.message(F.text, states.TextToVideo.choose_prompt)
 async def t2v_negative_prompt(message: Message, state: FSMContext):
@@ -205,7 +213,7 @@ async def t2v_negative_prompt(message: Message, state: FSMContext):
     )
 
     await state.set_state(states.TextToVideo.choose_negative_prompt)
-
+    await unclog_queue()
 
 @router.message(F.text, states.TextToImage.choose_negative_prompt)        
 @router.message(F.text, states.TextToVideo.choose_negative_prompt)
@@ -228,12 +236,11 @@ async def from_text_generation(message: Message, state: FSMContext):
         server_address = choice(list(Server.find_available_for_text(session))).address
     else:
         server_address = choice(list(Server.find_available_for_video(session))).address
-    Queue.add_new_queue_item(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=dimensions, user_id=message.chat.id, upload_image_name="", server_address=server_address)
-    server = Server.find_server_by_address(session, server_address)
-    await server.server_polling()
     session.close()
+    
+    Queue.add_new_queue_item(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=dimensions, user_id=message.chat.id, upload_image_name="", server_address=server_address)
     await state.clear()
-
+    await unclog_queue()
     # DEPRECATED:
     # if server:
 
@@ -327,7 +334,7 @@ async def from_image_generation(message: Message, state: FSMContext):
     Queue.add_new_queue_item(prompt="", negative_prompt="", workflow=workflow, dimensions=dimensions, user_id=message.chat.id, upload_image_name=photo_path, server_address=server_address)
 
     await state.clear()
-
+    await unclog_queue()
     # DEPRECATED:
     # if server:
     #     server_id = server.id   
