@@ -614,7 +614,7 @@
   },
   "153": {
     "inputs": {
-      "image": "/home/andy/AI/ComfyUI/input/${id}_img_00001_.png",
+      "image": "/home/andy/AI/ComfyUI/output/${id}_img_00001_.png",
       "upload": "image"
     },
     "class_type": "LoadImage",
