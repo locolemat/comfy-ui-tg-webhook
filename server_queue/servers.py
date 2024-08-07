@@ -89,15 +89,14 @@ class Server(Base):
 
 
     async def server_polling(self): 
-        queue = Queue.get_server_queue(self.address)
-        for queue_item in queue:
-            session = create_session_queue()
-            queue_item.processed = True
-            print("UPDATED PROCESSED STATUS")
-            session.commit()
-            session.close()
-            print(f"started polling on server {self.address}")
-            await queue_work(queue_item=queue_item, workflow=queue_item.workflow, server=self)
+        with create_session_queue() as session:
+            queue = Queue.get_server_queue(self.address, session)
+            for queue_item in queue:
+                queue_item.processed = True
+                print("UPDATED PROCESSED STATUS")
+                session.commit()
+                print(f"started polling on server {self.address}")
+                await queue_work(queue_item=queue_item, workflow=queue_item.workflow, server=self)
 
 
     # def __init__(self, address: str, busy: bool = False):
