@@ -107,8 +107,7 @@ async def process_queue_result_image(queue_item: Queue, workflow: Workflow, serv
     print('Propagation: image upload')
     
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'upload')
-    image_name = f"{queue_item.upload_image_name}_up.png"
-    photo_path = os.path.join(UPLOAD_FOLDER, image_name)
+    photo_path = os.path.join(UPLOAD_FOLDER, queue_item.upload_image_name)
 
     await client.upload_image(address=server.address, image_path=photo_path)
 
