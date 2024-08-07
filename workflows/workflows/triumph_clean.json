@@ -26,7 +26,7 @@
   },
   "6": {
     "inputs": {
-      "text": "(bad quality, worst quality:1.2)",
+      "text": "(bad quality, worst quality:1.2), ${negative_prompt}",
       "clip": [
         "107",
         1
@@ -319,7 +319,7 @@
   },
   "122": {
     "inputs": {
-      "text": "a man in a trenchcoat, walking down a street",
+      "text": "${prompt}",
       "clip": [
         "107",
         1
@@ -332,7 +332,7 @@
   },
   "123": {
     "inputs": {
-      "text": "text, watermanrk",
+      "text": "text, watermanrk, ${negative_prompt}",
       "clip": [
         "107",
         1
