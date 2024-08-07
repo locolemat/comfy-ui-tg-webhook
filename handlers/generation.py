@@ -28,9 +28,8 @@ router = Router()
 
 greeting_buttons_text = {'i2v':language.button_generate_image_video, 't2v': language.button_generate_text_video, 't2i': language.button_generate_text_image}
 async def unclog_queue():
-    with create_session_queue() as session:
-        for server in Server.get_all_servers():
-            await server.server_polling()
+    for server in Server.get_all_servers():
+        await server.server_polling()
 
 
 # @router.message(F.text, Command('armageddon'))
@@ -328,7 +327,7 @@ async def from_image_generation(message: Message, state: FSMContext):
     
 
     session = create_session()
-    server_address = choice(Server.find_available_for_video(session)).address
+    server_address = choice(list(Server.find_available_for_video(session))).address
     session.close()
 
     Queue.add_new_queue_item(prompt="", negative_prompt="", workflow=workflow, dimensions=dimensions, user_id=message.chat.id, upload_image_name=photo_path, server_address=server_address)
