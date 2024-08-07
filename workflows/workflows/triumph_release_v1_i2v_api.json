@@ -1,4 +1,4 @@
-{
+{"prompt":{
   "2": {
     "inputs": {
       "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
@@ -26,7 +26,7 @@
   },
   "6": {
     "inputs": {
-      "text": "(bad quality, worst quality:1.2)",
+      "text": "(bad quality, worst quality:1.2), ${negative_prompt}",
       "clip": [
         "107",
         1
@@ -39,7 +39,7 @@
   },
   "7": {
     "inputs": {
-      "seed": 1016158429286413,
+      "seed": {"$eval": "seed"},
       "steps": 20,
       "cfg": 7,
       "sampler_name": "euler_ancestral",
@@ -142,7 +142,7 @@
     "inputs": {
       "frame_rate": 25,
       "loop_count": 0,
-      "filename_prefix": "2024-08-06/Triumph",
+      "filename_prefix": "${id}",
       "format": "video/h265-mp4",
       "pix_fmt": "yuv420p10le",
       "crf": 22,
@@ -289,7 +289,7 @@
   },
   "129": {
     "inputs": {
-      "ckpt_name": "SVD/svd_xt_1_1.safetensors"
+      "ckpt_name": "${video_model}"
     },
     "class_type": "ImageOnlyCheckpointLoader",
     "_meta": {
@@ -298,8 +298,8 @@
   },
   "130": {
     "inputs": {
-      "width": 576,
-      "height": 768,
+      "width": {"$eval": "width"},
+      "height": {"$eval": "height"},
       "video_frames": 16,
       "motion_bucket_id": 100,
       "fps": 8,
@@ -368,7 +368,7 @@
   },
   "134": {
     "inputs": {
-      "seed": 536221916710798,
+      "seed": {"$eval": "seed_2"},
       "steps": 20,
       "cfg": 2.5,
       "sampler_name": "euler",
@@ -500,7 +500,7 @@
   },
   "153": {
     "inputs": {
-      "image": "JCOA3YQHW9_00001.png",
+      "image": "${id}_up.png",
       "upload": "image"
     },
     "class_type": "LoadImage",
@@ -510,7 +510,7 @@
   },
   "154": {
     "inputs": {
-      "image": "JCOA3YQHW9_00001.png",
+      "image": "${id}_up.png",
       "upload": "image"
     },
     "class_type": "LoadImage",
@@ -518,4 +518,4 @@
       "title": "Load Image"
     }
   }
-}
+}}
