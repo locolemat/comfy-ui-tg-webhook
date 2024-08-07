@@ -582,23 +582,6 @@
       "title": "Preview Image"
     }
   },
-  "142": {
-    "inputs": {
-      "add_noise": "enable",
-      "noise_seed": 1007259735262523,
-      "steps": 20,
-      "cfg": 8,
-      "sampler_name": "euler",
-      "scheduler": "normal",
-      "start_at_step": 0,
-      "end_at_step": 10000,
-      "return_with_leftover_noise": "disable"
-    },
-    "class_type": "KSamplerAdvanced",
-    "_meta": {
-      "title": "KSampler (Advanced)"
-    }
-  },
   "143": {
     "inputs": {
       "filename_prefix": "${id}_img",
