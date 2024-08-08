@@ -55,7 +55,7 @@ class Server(Base):
 
     @eta.setter
     def eta(self, eta):
-        with create_session as session:
+        with create_session() as session:
             self._eta = eta
             session.commit()
 
