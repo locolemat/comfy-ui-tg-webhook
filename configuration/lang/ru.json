@@ -1,5 +1,7 @@
 {
         "greeting": "${queue_info}\n:raised_hand:Здравствуйте, <b>${username}</b>! Добро пожаловать в <b>NymphAI</b> - ИИ для генерации картинок и видео! \nУ Вас ${tokens} токенов. Выберите действие:",
+        "greeting_current_request": "\nСейчас обрабатывается один из ваших запросов, осталось примерно ${eta} секунд.",
+        "greeting_queue_size": "\n.У вас в очереди ещё ${queue_size} запросов.",
         "button_generate_text_image": "Сгенерировать картинку из текста",
         "button_generate_text_video": "Сгенерировать видео из текста",
         "button_generate_image_video": "Сгенерировать видео из картинки",

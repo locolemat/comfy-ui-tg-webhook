@@ -1,6 +1,4 @@
 import os
-import time
-import asyncio
 
 from random import choice
 
@@ -52,7 +50,7 @@ async def greeting_reply(message: Message, state: FSMContext):
     await state.clear()
     
     tgid = message.from_user.id
-
+    queue_info = ""
     session = create_session()
 
     user = User.return_user_if_exists(tgid=tgid, session=session)
@@ -66,16 +64,31 @@ async def greeting_reply(message: Message, state: FSMContext):
         session.add(user)
         session.commit()
 
+
     else:
         username = user.username
         balance = user.balance
+
+        queue_size = Queue.get_users_queue_length(user_id = user.tgid)
+        processed_queue_request = Queue.get_users_processed_request(user_id = user.tgid)
+
+        if processed_queue_request:
+            start_time = processed_queue_request.begin_time
+            server_eta = Server.find_server_by_address(session=session, address=processed_queue_request.server_address)
+
+            queue_info += LanguageModel.with_context(template = language.greeting_current_request,
+                                                     context={"eta": utils.calculate_request_eta(start=start_time, server_eta=server_eta)})
+
+        if queue_size - 1:
+            queue_info += LanguageModel.with_context(template = language.greeting_queue_size,
+                                                     context={"queue_size": queue_size})
 
     session.close()
 
     await message.answer(
         text=LanguageModel.with_emojis(
                                     LanguageModel.with_context(template=language.greeting, 
-                                       context={"username":username,"tokens":balance}
+                                       context={"username":username,"tokens":balance, "queue_info": queue_info}
                                        )),
         reply_markup=greeting_keyboard()
     )

@@ -1,7 +1,7 @@
 from workflows.controller import Workflow
 from configuration.config import ADDRESSES
 
-from sqlalchemy import String, ForeignKey, Float, Boolean, select, Integer, delete, update
+from sqlalchemy import String, ForeignKey, Float, Boolean, select, delete, update
 from sqlalchemy.orm import Mapped, mapped_column, Session
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -20,7 +20,7 @@ class Queue(Base):
     _upload_image_name: Mapped[str] = mapped_column("upload_image_name", String)
     _server_address: Mapped[str] = mapped_column("server_address", String)
     _processed: Mapped[bool] = mapped_column("processed", Boolean)
-    _begin_time: Mapped[int] = mapped_column("begin_time", Integer)
+    _begin_time: Mapped[Float] = mapped_column("begin_time", Float)
 
     @classmethod
     def add_new_queue_item(cls, prompt, negative_prompt, workflow, dimensions, user_id, upload_image_name, server_address):
@@ -61,7 +61,7 @@ class Queue(Base):
         with Session(queue_engine) as session:
             return session.get(Queue, id)
         
-        
+
     @classmethod
     def get_users_queue_length(cls, user_id):
         with Session(queue_engine) as session:
@@ -71,7 +71,7 @@ class Queue(Base):
     @classmethod
     def get_users_processed_request(cls, user_id):
         with Session(queue_engine) as session:
-            return session.query(Queue).where(Queue.user_id == user_id).where(Queue.processed == 1).count()
+            return session.query(Queue).where(Queue.user_id == user_id).where(Queue.processed == 1).first()
         
 
     @hybrid_property

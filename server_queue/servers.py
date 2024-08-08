@@ -1,3 +1,5 @@
+import time
+
 from configuration.config import ADDRESSES
 
 from sqlalchemy import String, Float, Boolean, select
@@ -101,6 +103,7 @@ class Server(Base):
             queue = Queue.get_server_queue(self.address, session)
             for queue_item in queue:
                 queue_item.processed = True
+                queue_item.begin_time = time.time()
                 print("UPDATED PROCESSED STATUS")
                 session.commit()
                 print(f"started polling on server {self.address}")

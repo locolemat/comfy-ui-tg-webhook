@@ -1,6 +1,7 @@
 import string
 import random
 import asyncio
+import time
 
 def generate_string(length):
     all_symbols = string.ascii_uppercase + string.digits
@@ -17,6 +18,11 @@ def get_dimensions(dimensions):
     else:
         return dict(width=512, height=768)
 
+
+def calculate_request_eta(start, server_eta):
+    current = time.time()
+    t = current - start
+    return f"{t:.2f}" if t > 0 else "5"
 
 async def results_polling(address, status_func, download_func, id, file_type):
     t = True
