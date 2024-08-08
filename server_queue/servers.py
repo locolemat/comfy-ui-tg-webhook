@@ -4,7 +4,7 @@ from sqlalchemy import String, Float, Boolean, select
 from sqlalchemy.orm import Mapped, mapped_column, Session
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from model import Base, queue_engine, create_session_queue
+from model import Base, engine, create_session_queue
 from .server_queue import Queue
 from propagation import queue_work
 
@@ -74,7 +74,7 @@ class Server(Base):
 
     @classmethod
     def get_all_servers(cls):
-        with Session(queue_engine) as session:
+        with Session(engine) as session:
             return list(session.query(Server))
         
 
@@ -134,9 +134,4 @@ class Server(Base):
 #                 return server
 
 
-Base.metadata.create_all(queue_engine)
-with Session(queue_engine) as session:
-    session.query(Server).delete()
-    SERVER_LIST = [Server(address=server['address'], eta=-1.0, busy=False, for_video=server['for_video']) for server in ADDRESSES]
-    session.add_all(SERVER_LIST)
-    session.commit()
+Base.metadata.create_all(engine)
