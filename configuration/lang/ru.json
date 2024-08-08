@@ -1,5 +1,5 @@
 {
-        "greeting": ":raised_hand:Здравствуйте, <b>${username}</b>! Добро пожаловать в <b>AIDA</b> - ИИ для генерации картинок и видео! \nУ Вас ${tokens} токенов. Выберите действие:",
+        "greeting": "${queue_info}\n:raised_hand:Здравствуйте, <b>${username}</b>! Добро пожаловать в <b>NymphAI</b> - ИИ для генерации картинок и видео! \nУ Вас ${tokens} токенов. Выберите действие:",
         "button_generate_text_image": "Сгенерировать картинку из текста",
         "button_generate_text_video": "Сгенерировать видео из текста",
         "button_generate_image_video": "Сгенерировать видео из картинки",
