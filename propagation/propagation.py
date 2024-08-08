@@ -36,7 +36,7 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow, serve
         chat_id=queue_item.user_id,
         text = LanguageModel.with_context(
             template=language.queue_is_up,
-            context={"prompt": queue_item.prompt}
+            context={"prompt": queue_item.prompt, "eta": f"{server.eta:.2f}"}
                                     )
     )
     file_type = workflow.file_type
@@ -50,11 +50,6 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow, serve
 
     model = user.preferred_model
     video_model = user.preferred_video_model
-
-    await bot.send_message(
-        chat_id=queue_item.user_id,
-        text = language.generation_began
-    )
 
     id = utils.generate_string(10)
     print(f"Query ID: {id}")
@@ -90,7 +85,7 @@ async def process_queue_result_image(queue_item: Queue, workflow: Workflow, serv
         chat_id=queue_item.user_id,
         text = LanguageModel.with_context(
             template=language.queue_is_up,
-            context={"prompt": queue_item.prompt}
+            context={"prompt": queue_item.prompt, "eta": f"{server.eta:.2f}"}
                                         )
     )
 
