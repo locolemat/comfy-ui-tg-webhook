@@ -79,7 +79,7 @@ async def greeting_reply(message: Message, state: FSMContext):
             queue_info += LanguageModel.with_context(template = language.greeting_current_request,
                                                      context={"eta": utils.calculate_request_eta(start=start_time, server_eta=server_eta)})
 
-        if queue_size - 1:
+        if queue_size - 1 > 0:
             queue_info += LanguageModel.with_context(template = language.greeting_queue_size,
                                                      context={"queue_size": queue_size})
 
