@@ -101,10 +101,11 @@ class Server(Base):
     async def server_polling(self): 
         with create_session_queue() as session:
             queue = Queue.get_server_queue(self.address, session)
-            for queue_item in queue:
+            for i, queue_item in enumerate(queue):
+                begin_time = time.time() + i * self.eta
                 print("UPDATED PROCESSED STATUS")
                 print(f"started polling on server {self.address}")
-                await queue_work(queue_item=queue_item, workflow=queue_item.workflow, server=self)
+                await queue_work(queue_item=queue_item, workflow=queue_item.workflow, server=self, begin_time=begin_time)
 
 
     # def __init__(self, address: str, busy: bool = False):

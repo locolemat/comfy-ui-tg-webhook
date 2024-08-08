@@ -22,15 +22,15 @@ async def wake_queue():
     await queue_work()
 
 
-async def queue_work(queue_item, workflow, server):
+async def queue_work(queue_item, workflow, server, begin_time):
     workflow = WORKFLOW_MAPPING[workflow]
     if workflow.requires_image_upload:
-        await process_queue_result_image(queue_item=queue_item, workflow=workflow, server=server)
+        await process_queue_result_image(queue_item=queue_item, workflow=workflow, server=server, begin_time=begin_time)
     else:
-        await process_queue_result_text(queue_item=queue_item, workflow=workflow, server=server)
+        await process_queue_result_text(queue_item=queue_item, workflow=workflow, server=server, begin_time=begin_time)
 
 
-async def process_queue_result_text(queue_item: Queue, workflow: Workflow, server):
+async def process_queue_result_text(queue_item: Queue, workflow: Workflow, server, begin_time):
     print("BEGAN PROPAGATING EVENT")
     await bot.send_message(
         chat_id=queue_item.user_id,
@@ -57,10 +57,9 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow, serve
     print('Propagation: make a query')
 
     await client.prompt_query(prompt=LanguageModel.translate_to_english(queue_item.prompt), negative_prompt=queue_item.negative_prompt, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=0, model=model, video_model=video_model)
-
     start_time = time.time()
     queue_item.update_processed_status(True)
-    queue_item.update_begin_time(start_time)
+    queue_item.update_begin_time(begin_time)
 
     print('Propagation: start polling')
     await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
@@ -80,7 +79,7 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow, serve
     Queue.delete_queue_item(queue_item.id)
 
 
-async def process_queue_result_image(queue_item: Queue, workflow: Workflow, server):
+async def process_queue_result_image(queue_item: Queue, workflow: Workflow, server, begin_time):
     print("BEGAN PROPAGATING EVENT")
     
 
@@ -115,6 +114,9 @@ async def process_queue_result_image(queue_item: Queue, workflow: Workflow, serv
     await client.prompt_query(address=server.address, prompt=os.path.basename(queue_item.prompt), id = id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=0, model=model, video_model=video_model)
 
     start_time = time.time()
+
+    queue_item.update_processed_status(True)
+    queue_item.update_begin_time(begin_time)
     print('Propagation: start polling')
     await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)
     print(f"It took {time.time() - start_time:.3f} seconds to finish. Mad bollocks.")
@@ -126,5 +128,5 @@ async def process_queue_result_image(queue_item: Queue, workflow: Workflow, serv
     await bot.send_video(queue_item.user_id, result, caption=language.video_ready)
 
     server.busy = False
-    server.eta = (server.eta + time.time()) / 2
+    server.update_server_eta(time.time() - start_time)
     Queue.delete_queue_item(queue_item.id)
