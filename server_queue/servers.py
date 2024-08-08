@@ -57,7 +57,7 @@ class Server(Base):
     def eta(self, eta):
         self._eta = eta
         with create_session() as session:
-            this_server = Server.find_server_by_address(session=session, address=self.address)
+            this_server = Server.find_server_by_address(session=session, address=self._address)
             this_server.eta = eta
             session.commit()
 
