@@ -56,10 +56,6 @@ class Server(Base):
     @eta.setter
     def eta(self, eta):
         self._eta = eta
-        with create_session() as session:
-            this_server = Server.find_server_by_address(session=session, address=self._address)
-            this_server.eta = eta
-            session.commit()
 
     
     @classmethod
@@ -86,6 +82,14 @@ class Server(Base):
     def find_server_by_address(cls, session, address):
         server = session.scalar(select(Server).where(Server.address == address))
         return server
+
+
+    def update_server_eta(self, t):
+        with Session(engine) as session:
+            server = Server.find_server_by_address(session=session, address=self.address)
+            server.eta = (server.eta + t) / 2
+            session.commit()
+
 
 
     def __repr__(self):

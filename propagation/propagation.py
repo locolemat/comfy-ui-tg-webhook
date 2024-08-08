@@ -74,7 +74,7 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow, serve
         await bot.send_photo(queue_item.user_id, result, caption=language.picture_ready)
 
     server.busy = False
-    server.eta = (server.eta + time.time()) / 2
+    server.update_server_eta(time.time() - start_time)
     Queue.delete_queue_item(queue_item.id)
 
 
