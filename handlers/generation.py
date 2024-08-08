@@ -74,7 +74,7 @@ async def greeting_reply(message: Message, state: FSMContext):
 
         if processed_queue_request:
             start_time = processed_queue_request.begin_time
-            server_eta = Server.find_server_by_address(session=session, address=processed_queue_request.server_address)
+            server_eta = Server.find_server_by_address(session=session, address=processed_queue_request.server_address).eta
 
             queue_info += LanguageModel.with_context(template = language.greeting_current_request,
                                                      context={"eta": utils.calculate_request_eta(start=start_time, server_eta=server_eta)})
