@@ -20,7 +20,7 @@ class Queue(Base):
     _upload_image_name: Mapped[str] = mapped_column("upload_image_name", String)
     _server_address: Mapped[str] = mapped_column("server_address", String)
     _processed: Mapped[bool] = mapped_column("processed", Boolean)
-    _begin_time: Mapped[Float] = mapped_column("begin_time", Float)
+    _begin_time: Mapped[Float] = mapped_column("begin_time", Float, nullable=True)
 
     @classmethod
     def add_new_queue_item(cls, prompt, negative_prompt, workflow, dimensions, user_id, upload_image_name, server_address):
