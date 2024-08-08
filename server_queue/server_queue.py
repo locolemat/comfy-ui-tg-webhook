@@ -22,6 +22,21 @@ class Queue(Base):
     _processed: Mapped[bool] = mapped_column("processed", Boolean)
     _begin_time: Mapped[Float] = mapped_column("begin_time", Float, nullable=True)
 
+
+    def update_processed_status(self, processed):
+        with Session(queue_engine) as session:
+            queue_item = session.get(Queue, self.id)
+            queue_item.processed = processed
+            session.commit()
+
+
+    def update_begin_time(self, begin_time):
+        with Session(queue_engine) as session:
+            queue_item = session.get(Queue, self.id)
+            queue_item.begin_time = begin_time
+            session.commit()
+
+
     @classmethod
     def add_new_queue_item(cls, prompt, negative_prompt, workflow, dimensions, user_id, upload_image_name, server_address):
         with Session(queue_engine) as session:

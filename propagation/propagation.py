@@ -3,7 +3,7 @@ import os
 
 from bot import bot
 
-from model import create_session
+from model import create_session, create_session_queue
 
 from server_queue import Queue
 from configuration.localisation import LanguageModel, language
@@ -59,6 +59,8 @@ async def process_queue_result_text(queue_item: Queue, workflow: Workflow, serve
     await client.prompt_query(prompt=LanguageModel.translate_to_english(queue_item.prompt), negative_prompt=queue_item.negative_prompt, address=server.address, id=id, workflow=workflow(), width=dimensions["width"], height=dimensions["height"], frames=0, model=model, video_model=video_model)
 
     start_time = time.time()
+    queue_item.update_processed_status(True)
+    queue_item.update_begin_time(start_time)
 
     print('Propagation: start polling')
     await utils.results_polling(address=server.address, status_func=client.get, download_func=client.download, id=id, file_type=file_type)

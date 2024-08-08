@@ -102,10 +102,7 @@ class Server(Base):
         with create_session_queue() as session:
             queue = Queue.get_server_queue(self.address, session)
             for queue_item in queue:
-                queue_item.processed = True
-                queue_item.begin_time = time.time()
                 print("UPDATED PROCESSED STATUS")
-                session.commit()
                 print(f"started polling on server {self.address}")
                 await queue_work(queue_item=queue_item, workflow=queue_item.workflow, server=self)
 
