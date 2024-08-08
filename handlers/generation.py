@@ -81,7 +81,7 @@ async def greeting_reply(message: Message, state: FSMContext):
 
         if queue_size - 1 > 0:
             queue_info += LanguageModel.with_context(template = language.greeting_queue_size,
-                                                     context={"queue_size": queue_size})
+                                                     context={"queue_size": queue_size - 1})
 
     session.close()
 
