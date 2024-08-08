@@ -4,7 +4,7 @@ from sqlalchemy import String, Float, Boolean, select
 from sqlalchemy.orm import Mapped, mapped_column, Session
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from model import Base, engine, create_session_queue
+from model import Base, engine, create_session_queue, create_session
 from .server_queue import Queue
 from propagation import queue_work
 
@@ -55,7 +55,9 @@ class Server(Base):
 
     @eta.setter
     def eta(self, eta):
-        self._eta = eta
+        with create_session as session:
+            self._eta = eta
+            session.commit()
 
     
     @classmethod
