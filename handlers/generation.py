@@ -243,7 +243,7 @@ async def from_text_generation(message: Message, state: FSMContext):
         server_address = choice(list(Server.find_available_for_text(session))).address
     else:
         server_address = choice(list(Server.find_available_for_video(session))).address
-    user = User.return_user_if_exists(tgid = message.chat.id)
+    user = User.return_user_if_exists(tgid = message.chat.id, session=session)
     session.close()
     
     Queue.add_new_queue_item(prompt=prompt, negative_prompt=negative_prompt, workflow=workflow, dimensions=dimensions, user_id=user.tgid, upload_image_name="", server_address=server_address)
@@ -336,7 +336,7 @@ async def from_image_generation(message: Message, state: FSMContext):
 
     session = create_session()
     server_address = choice(list(Server.find_available_for_video(session))).address
-    user = User.return_user_if_exists(tgid = message.chat.id)
+    user = User.return_user_if_exists(tgid = message.chat.id, session=session)
     session.close()
 
     Queue.add_new_queue_item(prompt="", negative_prompt="", workflow=workflow, dimensions=dimensions, user_id=user.tgid, upload_image_name=photo_path, server_address=server_address)
